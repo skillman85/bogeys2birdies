@@ -44,7 +44,7 @@ export function NewsletterSignup({ settings = {} }) {
         <span>{consentText}</span>
       </label>
       <label className="newsletter-honeypot" aria-hidden="true">Website<input tabIndex="-1" autoComplete="off" value={website} onChange={(event) => setWebsite(event.target.value)} /></label>
-      <small>Free. Unsubscribe whenever you like.</small>
+      <small className="newsletter-note">Free. Unsubscribe whenever you like.</small>
       {message && <p className={`newsletter-status ${status}`}>{message}</p>}
     </form>
   );

@@ -37,7 +37,7 @@ export function ArticleCard({ category, categorySlug, categoryHref, title, meta,
 export function Newsletter({ settings = {} }) {
   return <section className="newsletter">
     <div><Eyebrow>B2B Dispatch</Eyebrow><h2>{settings.newsletterHeadingLineOne || 'One useful golf lesson.'}<br/>{settings.newsletterHeadingLineTwo || 'Every Friday.'}</h2></div>
-    <div><p>{settings.newsletterDescription || 'No tour gossip. No miracle swing tips. Just what we tested, what changed and what might help your game.'}</p>
+    <div className="newsletter-panel"><p>{settings.newsletterDescription || 'No tour gossip. No miracle swing tips. Just what we tested, what changed and what might help your game.'}</p>
     <NewsletterSignup settings={settings} /></div>
   </section>
 }
