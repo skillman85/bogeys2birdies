@@ -18,6 +18,8 @@
 .custom-page-body p { margin: 0 0 24px; }
 .custom-page-body a { color: var(--green2); text-decoration: underline; }
 .custom-page-image { display: block; width: 100%; height: auto; margin: 42px 0; }
+.brand-logo { display: block; width: 62px; height: 62px; object-fit: contain; }
+.footer-brand .brand-logo { width: 120px; height: 120px; }
 .card-image-link { display: block; }
 .content-detail-meta { margin-top: 28px; font: 500 11px var(--mono); letter-spacing: .08em; text-transform: uppercase; }
 .content-detail-cover { display: block; width: 100%; max-height: 720px; object-fit: cover; }

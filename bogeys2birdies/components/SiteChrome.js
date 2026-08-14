@@ -8,7 +8,7 @@ export function Header() {
     <header className="site-header">
       <div className="nav-shell">
         <Link className="brand" href="/" aria-label="Bogeys2Birdies home">
-          <span>BOGEYS</span><strong>2</strong><span>BIRDIES</span>
+          <img className="brand-logo" src="/bogeys2birdies-logo.png" alt="Bogeys2Birdies" />
         </Link>
         <nav className={open ? 'nav-links open' : 'nav-links'}>
           <Link href="/project">Project</Link>
@@ -27,7 +27,7 @@ export function Footer({ settings = {} }) {
   return (
     <footer className="footer">
       <div>
-        <div className="brand footer-brand"><span>BOGEYS</span><strong>2</strong><span>BIRDIES</span></div>
+        <div className="brand footer-brand"><img className="brand-logo" src="/bogeys2birdies-logo.png" alt="Bogeys2Birdies" /></div>
         <p>{settings.footerTagline || 'Real golf. Real progress.'}</p>
       </div>
       <div className="footer-links">
