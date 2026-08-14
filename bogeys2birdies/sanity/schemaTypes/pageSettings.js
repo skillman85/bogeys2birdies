@@ -16,6 +16,7 @@ export const pageSettings = defineType({
     defineField({ name: 'chartEyebrow', type: 'string' }),
     defineField({ name: 'chartHeading', type: 'string' }),
     defineField({ name: 'chartValue', type: 'string' }),
+    defineField({ name: 'handicapMilestones', title: 'Handicap trend milestones', description: 'Add historical milestones here. The latest Current node is added automatically from Homepage settings.', type: 'array', of: [defineArrayMember({ type: 'handicapMilestone' })], validation: (rule) => rule.max(20), hidden: ({ document }) => document?.pageKey !== 'data' }),
     defineField({ name: 'seo', type: 'seo' }),
   ],
   preview: { select: { title: 'title', subtitle: 'pageKey' } },

@@ -46,6 +46,14 @@
 .comment-form button:disabled { opacity: .6; cursor: wait; }
 .comment-honeypot { position: absolute !important; left: -10000px !important; width: 1px !important; height: 1px !important; overflow: hidden !important; }
 .comment-status { color: var(--green2) !important; font-weight: 700; }
+.handicap-chart { margin-top: 28px; overflow-x: auto; color: var(--acid); }
+.handicap-chart svg { display: block; width: 100%; min-width: 620px; height: auto; }
+.handicap-chart circle { fill: var(--green); stroke: var(--acid); stroke-width: 5px; }
+.handicap-chart .current-node circle { fill: var(--acid); stroke: white; }
+.handicap-chart text { font-family: var(--mono); }
+.handicap-chart .node-value { fill: white; font-size: 15px; font-weight: 700; }
+.handicap-chart .node-label { fill: #bac8bf; font-size: 11px; text-transform: uppercase; }
+.chart-empty { padding: 70px 0 35px; color: #bac8bf; text-align: center; }
 
 @media (max-width: 900px) {
   .custom-page-body { margin-top: 50px; font-size: 16px; }

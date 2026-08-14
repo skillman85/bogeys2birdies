@@ -22,6 +22,13 @@ export const stat = defineType({
   ], preview: { select: { title: 'value', subtitle: 'label' } },
 });
 
+export const handicapMilestone = defineType({
+  name: 'handicapMilestone', title: 'Handicap milestone', type: 'object', fields: [
+    defineField({ name: 'label', title: 'Date or label', type: 'string', validation: (rule) => rule.required() }),
+    defineField({ name: 'handicap', type: 'number', validation: (rule) => rule.required().min(0).max(54) }),
+  ], preview: { select: { title: 'label', handicap: 'handicap' }, prepare: ({ title, handicap }) => ({ title, subtitle: handicap == null ? '' : `Handicap ${handicap}` }) },
+});
+
 export const editorialFields = [
   defineField({ name: 'title', type: 'string', validation: (rule) => rule.required() }),
   defineField({ name: 'slug', type: 'slug', options: { source: 'title', maxLength: 96 }, validation: (rule) => rule.required() }),

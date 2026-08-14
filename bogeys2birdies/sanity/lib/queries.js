@@ -13,6 +13,7 @@ export const ARTICLES_QUERY = defineQuery(`*[_type == "article"] | order(publish
 export const EXPERIMENTS_QUERY = defineQuery(`*[_type == "experiment"] | order(publishedAt desc){..., "slug": slug.current, coverImage ${imageFields}}`);
 export const GEAR_REVIEWS_QUERY = defineQuery(`*[_type == "gearReview"] | order(publishedAt desc){..., "slug": slug.current, coverImage ${imageFields}}`);
 export const SITE_SETTINGS_QUERY = defineQuery(`*[_type == "siteSettings"][0]`);
+export const HOMEPAGE_SETTINGS_QUERY = defineQuery(`*[_type == "homepageSettings"][0]`);
 export const PAGE_SETTINGS_QUERY = defineQuery(`*[_type == "pageSettings" && pageKey == $pageKey][0]`);
 export const CUSTOM_PAGE_QUERY = defineQuery(`*[_type == "customPage" && slug.current == $slug][0]{..., "slug": slug.current}`);
 export const CONTENT_DETAIL_QUERY = defineQuery(`*[_type == $type && slug.current == $slug][0]{..., "slug": slug.current, coverImage ${imageFields}}`);
