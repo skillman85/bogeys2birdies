@@ -31,7 +31,9 @@ function getClient() {
 }
 
 function siteUrl() {
-  return (process.env.NEXT_PUBLIC_SITE_URL || process.env.VERCEL_PROJECT_PRODUCTION_URL || 'https://www.bogeys2birdies.co.uk').replace(/\/$/, '');
+  const rawUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.VERCEL_PROJECT_PRODUCTION_URL || 'https://www.bogeys2birdies.co.uk';
+  const withProtocol = /^https?:\/\//i.test(rawUrl) ? rawUrl : `https://${rawUrl}`;
+  return withProtocol.replace(/\/+$/, '');
 }
 
 function unsubscribeSecret() {
@@ -92,8 +94,10 @@ function emailShell({ preheader, html, unsubscribeLink }) {
     '<tr><td align="center">',
     '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:680px;background:#fffdf6;border:1px solid #ded8c8;">',
     '<tr><td style="padding:26px 28px;border-bottom:1px solid #e3ddcf;">',
-    `<img src="${logoUrl}" width="76" height="76" alt="Bogeys2Birdies" style="display:block;width:76px;height:76px;object-fit:contain;margin:0 0 12px;">`,
-    '<p style="margin:0;font-size:12px;letter-spacing:2.2px;text-transform:uppercase;color:#31683c;font-weight:700;">B2B Dispatch</p>',
+    '<table role="presentation" cellpadding="0" cellspacing="0"><tr>',
+    `<td style="vertical-align:middle;padding:0 14px 0 0;"><img src="${logoUrl}" width="112" height="112" alt="Bogeys2Birdies logo" style="display:block;width:112px;height:112px;object-fit:contain;border:0;outline:none;text-decoration:none;"></td>`,
+    '<td style="vertical-align:middle;"><p style="margin:0;font-size:21px;line-height:1.05;font-weight:800;letter-spacing:-.6px;color:#111713;">Bogeys2Birdies</p><p style="margin:6px 0 0;font-size:12px;letter-spacing:2.2px;text-transform:uppercase;color:#31683c;font-weight:700;">B2B Dispatch</p></td>',
+    '</tr></table>',
     '</td></tr>',
     '<tr><td style="padding:30px 28px;color:#111713;">',
     html,
