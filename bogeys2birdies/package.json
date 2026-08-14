@@ -28,8 +28,8 @@
     "@sanity/vision": "^6.9.2",
     "next": "^16.1.0",
     "next-sanity": "^13.3.3",
-    "react": "^19.2.3",
-    "react-dom": "^19.2.3",
+    "react": "19.2.8",
+    "react-dom": "19.2.8",
     "sanity": "^6.9.2",
     "styled-components": "6.1"
   },
