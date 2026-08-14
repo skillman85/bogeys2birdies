@@ -35,6 +35,16 @@ function getClient() {
   });
 }
 
+function siteUrl() {
+  const rawUrl = process.env.NEWSLETTER_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_SITE_URL || process.env.VERCEL_PROJECT_PRODUCTION_URL || 'https://www.bogeys2birdies.co.uk';
+  const withProtocol = /^https?:\/\//i.test(rawUrl) ? rawUrl : `https://${rawUrl}`;
+  return withProtocol.replace(/\/+$/, '');
+}
+
+function escapeHtml(value) {
+  return String(value || '').replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[char]);
+}
+
 function unsubscribeSecret() {
   return process.env.NEWSLETTER_UNSUBSCRIBE_SECRET || process.env.NEWSLETTER_SEND_TOKEN || getWriteToken() || 'bogeys2birdies-newsletter';
 }
@@ -44,6 +54,7 @@ function unsubscribeToken(email) {
 }
 
 function page({ title, message }) {
+  const homeUrl = siteUrl();
   return [
     '<!doctype html>',
     '<html lang="en">',
@@ -57,7 +68,7 @@ function page({ title, message }) {
     '<img src="/bogeys2birdies-logo.png" alt="Bogeys2Birdies" width="96" height="96" style="display:block;width:96px;height:96px;object-fit:contain;margin:0 0 26px;">',
     `<h1 style="font-size:46px;line-height:1;margin:0 0 18px;letter-spacing:-1.5px;">${title}</h1>`,
     `<p style="font-size:18px;margin:0 0 28px;color:#49524b;">${message}</p>`,
-    '<a href="/" style="display:inline-block;background:#111713;color:#fff;text-decoration:none;padding:14px 18px;font-weight:700;">Back to Bogeys2Birdies</a>',
+    `<a href="${escapeHtml(homeUrl)}" style="display:inline-block;background:#111713;color:#fff;text-decoration:none;padding:14px 18px;font-weight:700;">Back to Bogeys2Birdies</a>`,
     '</main>',
     '</body>',
     '</html>',

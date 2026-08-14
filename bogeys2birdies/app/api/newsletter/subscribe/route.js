@@ -26,12 +26,16 @@ function escapeHtml(value) {
   return String(value || '').replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[char]);
 }
 
+function escapeAttribute(value) {
+  return escapeHtml(value);
+}
+
 function subscriberId(email) {
   return `newsletterSubscriber-${createHash('sha256').update(email).digest('hex').slice(0, 32)}`;
 }
 
 function siteUrl() {
-  const rawUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.VERCEL_PROJECT_PRODUCTION_URL || 'https://www.bogeys2birdies.co.uk';
+  const rawUrl = process.env.NEWSLETTER_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_SITE_URL || process.env.VERCEL_PROJECT_PRODUCTION_URL || 'https://www.bogeys2birdies.co.uk';
   const withProtocol = /^https?:\/\//i.test(rawUrl) ? rawUrl : `https://${rawUrl}`;
   return withProtocol.replace(/\/+$/, '');
 }
@@ -76,6 +80,8 @@ function senderFrom(name, email) {
 function welcomeEmailHtml({ email, unsubscribeLink }) {
   const baseUrl = siteUrl();
   const logoUrl = `${baseUrl}/bogeys2birdies-logo.png`;
+  const journalUrl = `${baseUrl}/journal`;
+  const privacyUrl = `${baseUrl}/privacy-policy`;
   return [
     '<!doctype html>',
     '<html>',
@@ -86,7 +92,7 @@ function welcomeEmailHtml({ email, unsubscribeLink }) {
     '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:660px;background:#fffdf6;border:1px solid #ded8c8;">',
     '<tr><td style="padding:28px 28px 18px;border-bottom:1px solid #e3ddcf;">',
     '<table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 0 20px;"><tr>',
-    `<td style="vertical-align:middle;padding:0 14px 0 0;"><img src="${logoUrl}" width="132" height="132" alt="Bogeys2Birdies logo" style="display:block;width:132px;height:132px;object-fit:contain;border:0;outline:none;text-decoration:none;"></td>`,
+    `<td style="vertical-align:middle;padding:0 14px 0 0;"><img src="${escapeAttribute(logoUrl)}" width="132" height="132" alt="Bogeys2Birdies logo" style="display:block;width:132px;height:132px;object-fit:contain;border:0;outline:none;text-decoration:none;"></td>`,
     '<td style="vertical-align:middle;"><p style="margin:0;font-size:22px;line-height:1.05;font-weight:800;letter-spacing:-.6px;color:#111713;">Bogeys2Birdies</p><p style="margin:6px 0 0;font-size:12px;letter-spacing:2.2px;text-transform:uppercase;color:#31683c;font-weight:700;">B2B Dispatch</p></td>',
     '</tr></table>',
     '<h1 style="margin:0;font-size:40px;line-height:1.02;letter-spacing:-1.5px;color:#111713;">You are on the list.</h1>',
@@ -102,11 +108,12 @@ function welcomeEmailHtml({ email, unsubscribeLink }) {
     '</table>',
     '<p style="margin:0 0 22px;font-size:16px;color:#49524b;">You signed up using this email address:</p>',
     `<p style="margin:0 0 26px;font-size:15px;color:#111713;font-weight:700;">${escapeHtml(email)}</p>`,
-    `<a href="${baseUrl}/journal" style="display:inline-block;background:#111713;color:#ffffff;text-decoration:none;padding:14px 18px;font-weight:700;font-size:14px;">Read the latest articles</a>`,
+    `<a href="${escapeAttribute(journalUrl)}" target="_blank" rel="noopener noreferrer" style="display:inline-block;background:#111713;color:#ffffff;text-decoration:none;padding:14px 18px;font-weight:700;font-size:14px;">Read the latest articles</a>`,
     '</td></tr>',
     '<tr><td style="padding:26px 28px 30px;border-top:1px solid #e3ddcf;background:#fbfaf6;">',
     '<p style="margin:0 0 12px;font-size:12px;color:#66736a;">You are receiving this because you subscribed to the Bogeys2Birdies newsletter. We use your email address only to send the newsletter and related Bogeys2Birdies updates. You can withdraw consent at any time.</p>',
-    `<p style="margin:0 0 12px;font-size:12px;color:#66736a;"><a href="${unsubscribeLink}" style="color:#31683c;text-decoration:underline;">Unsubscribe from Bogeys2Birdies emails</a> or reply to this email for help. Read the <a href="${baseUrl}/privacy-policy" style="color:#31683c;text-decoration:underline;">privacy policy</a>.</p>`,
+    `<p style="margin:0 0 12px;font-size:12px;color:#66736a;"><a href="${escapeAttribute(unsubscribeLink)}" target="_blank" rel="noopener noreferrer" style="color:#31683c;text-decoration:underline;">Unsubscribe from Bogeys2Birdies emails</a> or reply to this email for help. Read the <a href="${escapeAttribute(privacyUrl)}" target="_blank" rel="noopener noreferrer" style="color:#31683c;text-decoration:underline;">privacy policy</a>.</p>`,
+    `<p style="margin:0 0 12px;font-size:11px;color:#66736a;word-break:break-all;">If a button or link does not open, copy and paste this unsubscribe URL into your browser:<br>${escapeHtml(unsubscribeLink)}</p>`,
     '<p style="margin:0;font-size:12px;color:#66736a;">Bogeys2Birdies, United Kingdom. Contact: <a href="mailto:hello@bogeys2birdies.co.uk" style="color:#31683c;text-decoration:underline;">hello@bogeys2birdies.co.uk</a></p>',
     '</td></tr>',
     '</table>',

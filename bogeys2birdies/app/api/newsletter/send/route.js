@@ -31,7 +31,7 @@ function getClient() {
 }
 
 function siteUrl() {
-  const rawUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.VERCEL_PROJECT_PRODUCTION_URL || 'https://www.bogeys2birdies.co.uk';
+  const rawUrl = process.env.NEWSLETTER_PUBLIC_SITE_URL || process.env.NEXT_PUBLIC_SITE_URL || process.env.VERCEL_PROJECT_PRODUCTION_URL || 'https://www.bogeys2birdies.co.uk';
   const withProtocol = /^https?:\/\//i.test(rawUrl) ? rawUrl : `https://${rawUrl}`;
   return withProtocol.replace(/\/+$/, '');
 }
@@ -51,6 +51,10 @@ function unsubscribeUrl(email) {
 
 function escapeHtml(value) {
   return String(value || '').replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[char]);
+}
+
+function escapeAttribute(value) {
+  return escapeHtml(value);
 }
 
 function emailAddress(value) {
@@ -85,6 +89,7 @@ function portableTextToText(blocks = []) {
 function emailShell({ preheader, html, unsubscribeLink }) {
   const baseUrl = siteUrl();
   const logoUrl = `${baseUrl}/bogeys2birdies-logo.png`;
+  const privacyUrl = `${baseUrl}/privacy-policy`;
   return [
     '<!doctype html><html><body style="margin:0;background:#f4f1e6;color:#111713;font-family:Arial,Helvetica,sans-serif;line-height:1.55;">',
     '<div style="display:none;max-height:0;overflow:hidden;color:transparent;">',
@@ -95,7 +100,7 @@ function emailShell({ preheader, html, unsubscribeLink }) {
     '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:680px;background:#fffdf6;border:1px solid #ded8c8;">',
     '<tr><td style="padding:26px 28px;border-bottom:1px solid #e3ddcf;">',
     '<table role="presentation" cellpadding="0" cellspacing="0"><tr>',
-    `<td style="vertical-align:middle;padding:0 14px 0 0;"><img src="${logoUrl}" width="112" height="112" alt="Bogeys2Birdies logo" style="display:block;width:112px;height:112px;object-fit:contain;border:0;outline:none;text-decoration:none;"></td>`,
+    `<td style="vertical-align:middle;padding:0 14px 0 0;"><img src="${escapeAttribute(logoUrl)}" width="112" height="112" alt="Bogeys2Birdies logo" style="display:block;width:112px;height:112px;object-fit:contain;border:0;outline:none;text-decoration:none;"></td>`,
     '<td style="vertical-align:middle;"><p style="margin:0;font-size:21px;line-height:1.05;font-weight:800;letter-spacing:-.6px;color:#111713;">Bogeys2Birdies</p><p style="margin:6px 0 0;font-size:12px;letter-spacing:2.2px;text-transform:uppercase;color:#31683c;font-weight:700;">B2B Dispatch</p></td>',
     '</tr></table>',
     '</td></tr>',
@@ -104,7 +109,8 @@ function emailShell({ preheader, html, unsubscribeLink }) {
     '</td></tr>',
     '<tr><td style="padding:26px 28px 30px;border-top:1px solid #e3ddcf;background:#fbfaf6;">',
     '<p style="margin:0 0 12px;font-size:12px;color:#66736a;">You are receiving this because you subscribed to the Bogeys2Birdies newsletter. We use your email address only to send the newsletter and related Bogeys2Birdies updates. You can withdraw consent at any time.</p>',
-    `<p style="margin:0 0 12px;font-size:12px;color:#66736a;"><a href="${unsubscribeLink}" style="color:#31683c;text-decoration:underline;">Unsubscribe from Bogeys2Birdies emails</a> or reply to this email for help. Read the <a href="${baseUrl}/privacy-policy" style="color:#31683c;text-decoration:underline;">privacy policy</a>.</p>`,
+    `<p style="margin:0 0 12px;font-size:12px;color:#66736a;"><a href="${escapeAttribute(unsubscribeLink)}" target="_blank" rel="noopener noreferrer" style="color:#31683c;text-decoration:underline;">Unsubscribe from Bogeys2Birdies emails</a> or reply to this email for help. Read the <a href="${escapeAttribute(privacyUrl)}" target="_blank" rel="noopener noreferrer" style="color:#31683c;text-decoration:underline;">privacy policy</a>.</p>`,
+    `<p style="margin:0 0 12px;font-size:11px;color:#66736a;word-break:break-all;">If a button or link does not open, copy and paste this unsubscribe URL into your browser:<br>${escapeHtml(unsubscribeLink)}</p>`,
     '<p style="margin:0;font-size:12px;color:#66736a;">Bogeys2Birdies, United Kingdom. Contact: <a href="mailto:hello@bogeys2birdies.co.uk" style="color:#31683c;text-decoration:underline;">hello@bogeys2birdies.co.uk</a></p>',
     '</td></tr>',
     '</table>',
