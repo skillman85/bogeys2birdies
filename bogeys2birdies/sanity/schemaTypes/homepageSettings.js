@@ -4,6 +4,8 @@ export const homepageSettings = defineType({
   name: 'homepageSettings', title: 'Homepage settings', type: 'document', fields: [
     defineField({ name: 'heroEyebrow', type: 'string' }), defineField({ name: 'heroTitleLineOne', type: 'string' }), defineField({ name: 'heroTitleLineTwo', type: 'string' }),
     defineField({ name: 'heroDescription', type: 'text' }), defineField({ name: 'heroImage', type: 'image', options: { hotspot: true } }),
+    defineField({ name: 'heroPrimaryCtaLabel', title: 'Primary button text', type: 'string' }), defineField({ name: 'heroPrimaryCtaHref', title: 'Primary button link', type: 'string', description: 'Use a site path such as /project or a full URL.' }),
+    defineField({ name: 'heroSecondaryCtaLabel', title: 'Secondary button text', type: 'string' }), defineField({ name: 'heroSecondaryCtaHref', title: 'Secondary button link', type: 'string', description: 'Use a site path such as /experiments or a full URL.' }),
     defineField({ name: 'currentHandicap', type: 'string' }), defineField({ name: 'targetHandicap', type: 'string' }), defineField({ name: 'progressPercent', type: 'number', validation: (rule) => rule.min(0).max(100) }),
     defineField({ name: 'stats', type: 'array', of: [defineArrayMember({ type: 'stat' })], validation: (rule) => rule.max(4) }),
     defineField({ name: 'roadEyebrow', title: 'Road section label', type: 'string' }), defineField({ name: 'roadHeading', title: 'Road section heading', type: 'string' }), defineField({ name: 'roadDescription', title: 'Road section description', type: 'text' }),

@@ -21,7 +21,7 @@ export default async function Home() {
       <section className="hero">
         <div className="hero-bg" style={{backgroundImage:`linear-gradient(90deg,rgba(8,17,11,.88) 0%,rgba(8,17,11,.58) 45%,rgba(8,17,11,.15) 100%),url(${imageUrl(settings.heroImage, defaultHomeContent.settings.heroImage)})`}} />
         <div className="hero-inner"><Eyebrow>{settings.heroEyebrow}</Eyebrow><h1>{settings.heroTitleLineOne}<br/><em>{settings.heroTitleLineTwo}</em></h1><p>{settings.heroDescription}</p>
-        <div className="hero-actions"><Link className="btn primary" href="/project">Follow the road to 5</Link><Link className="btn ghost" href="/experiments">Explore experiments</Link></div>
+        <div className="hero-actions"><Link className="btn primary" href={settings.heroPrimaryCtaHref}>{settings.heroPrimaryCtaLabel}</Link><Link className="btn ghost" href={settings.heroSecondaryCtaHref}>{settings.heroSecondaryCtaLabel}</Link></div>
         <div className="hero-note">CURRENT HANDICAP <strong>{settings.currentHandicap}</strong> <span>→</span> TARGET <strong>{settings.targetHandicap}</strong></div></div>
       </section>
 
