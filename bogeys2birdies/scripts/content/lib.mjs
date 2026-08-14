@@ -53,13 +53,23 @@ function contentFields(type, input, { creating = false } = {}) {
   return output;
 }
 
+async function applyCategory(type, input, output) {
+  if (!['article', 'gearReview'].includes(type) || input.category === undefined) return output;
+  const title = String(input.category).trim();
+  const categorySlug = slugify(title);
+  if (!categorySlug) throw new Error('Category must contain letters or numbers.');
+  const categoryId = `category-${categorySlug}`;
+  await client.createIfNotExists({ _id: categoryId, _type: 'category', title, slug: { _type: 'slug', current: categorySlug } });
+  return { ...output, category: title, categoryRef: { _type: 'reference', _ref: categoryId } };
+}
+
 export async function createDraft(type, input) {
   const slug = slugify(input.slug || input.title || '');
   if (!slug) throw new Error('A title or slug is required.');
   const { draftId, publishedId } = ids(type, slug);
   if (await client.getDocument(draftId) || await client.getDocument(publishedId)) throw new Error(`Content already exists for slug: ${slug}`);
   const document = {
-    _id: draftId, _type: type, ...contentFields(type, input, { creating: true }),
+    _id: draftId, _type: type, ...await applyCategory(type, input, contentFields(type, input, { creating: true })),
     slug: { _type: 'slug', current: slug }, publishedAt: input.publishedAt || new Date().toISOString(), featured: input.featured ?? false,
   };
   const result = await client.create(document);
@@ -79,7 +89,7 @@ export async function ensureDraft(type, slug) {
 
 export async function updateDraft(type, slug, input) {
   const { draftId } = await ensureDraft(type, slug);
-  const patch = contentFields(type, input);
+  const patch = await applyCategory(type, input, contentFields(type, input));
   if (!Object.keys(patch).length) throw new Error('No supported fields were provided.');
   const result = await client.patch(draftId).set(patch).commit();
   return { status: 'draft-updated', id: result._id, slug: result.slug?.current };
