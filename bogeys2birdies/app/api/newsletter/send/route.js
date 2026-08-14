@@ -33,6 +33,15 @@ function escapeHtml(value) {
   return String(value || '').replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[char]);
 }
 
+function emailAddress(value) {
+  const match = String(value || '').match(/<([^>]+)>/);
+  return clean(match?.[1] || value, 254);
+}
+
+function senderFrom(name, email) {
+  return `${name || 'Bogeys2Birdies'} <${emailAddress(email)}>`;
+}
+
 function blockText(block) {
   return (block.children || []).map((child) => child.text || '').join('');
 }
@@ -60,7 +69,7 @@ async function sendEmail({ from, replyTo, to, subject, preheader, html, text }) 
     body: JSON.stringify({
       from,
       to: [to],
-      reply_to: replyTo || undefined,
+      reply_to: emailAddress(replyTo) || undefined,
       subject,
       html: [
         '<!doctype html><html><body style="margin:0;background:#fbfaf6;color:#111713;font-family:Arial,sans-serif;line-height:1.55;">',
@@ -123,7 +132,7 @@ export async function POST(request) {
   try {
     for (const recipient of recipients) {
       await sendEmail({
-        from: `${fromName} <${fromEmail}>`,
+        from: senderFrom(fromName, fromEmail),
         replyTo: replyToEmail,
         to: recipient.email,
         subject: campaign.subject,

@@ -40,6 +40,16 @@ function getClient() {
   });
 }
 
+function emailAddress(value) {
+  const match = String(value || '').match(/<([^>]+)>/);
+  return clean(match?.[1] || value, 254);
+}
+
+function senderFrom(name, email) {
+  const address = emailAddress(email);
+  return name && !String(email || '').includes('<') ? `${name} <${address}>` : `${name || 'Bogeys2Birdies'} <${address}>`;
+}
+
 async function sendWelcomeEmail({ email, settings }) {
   if (!process.env.RESEND_API_KEY) return false;
 
@@ -52,9 +62,9 @@ async function sendWelcomeEmail({ email, settings }) {
     method: 'POST',
     headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      from: `${fromName} <${fromEmail}>`,
+      from: senderFrom(fromName, fromEmail),
       to: [email],
-      reply_to: replyToEmail || undefined,
+      reply_to: emailAddress(replyToEmail) || undefined,
       subject: 'You are on the Bogeys2Birdies list',
       html: [
         '<!doctype html><html><body style="margin:0;background:#fbfaf6;color:#111713;font-family:Arial,sans-serif;line-height:1.55;">',
@@ -78,7 +88,8 @@ async function sendWelcomeEmail({ email, settings }) {
   });
 
   if (!response.ok) {
-    console.error(`Newsletter welcome email failed with status ${response.status}.`);
+    const errorText = await response.text().catch(() => '');
+    console.error(`Newsletter welcome email failed with status ${response.status}. ${errorText}`);
     return false;
   }
   return true;
