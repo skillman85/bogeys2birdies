@@ -1,4 +1,4 @@
-import { createHash } from 'node:crypto';
+import { createHash, createHmac } from 'node:crypto';
 import { createClient } from '@sanity/client';
 
 const allowedHosts = new Set(['bogeys2birdies.co.uk', 'www.bogeys2birdies.co.uk', 'localhost', '127.0.0.1']);
@@ -22,8 +22,29 @@ function clean(value, maxLength) {
   return String(value || '').replace(/[\u0000-\u001F\u007F]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, maxLength);
 }
 
+function escapeHtml(value) {
+  return String(value || '').replace(/[&<>"']/g, (char) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' })[char]);
+}
+
 function subscriberId(email) {
   return `newsletterSubscriber-${createHash('sha256').update(email).digest('hex').slice(0, 32)}`;
+}
+
+function siteUrl() {
+  return (process.env.NEXT_PUBLIC_SITE_URL || process.env.VERCEL_PROJECT_PRODUCTION_URL || 'https://www.bogeys2birdies.co.uk').replace(/\/$/, '');
+}
+
+function unsubscribeSecret() {
+  return process.env.NEWSLETTER_UNSUBSCRIBE_SECRET || process.env.NEWSLETTER_SEND_TOKEN || getWriteToken() || 'bogeys2birdies-newsletter';
+}
+
+function unsubscribeToken(email) {
+  return createHmac('sha256', unsubscribeSecret()).update(email).digest('hex').slice(0, 32);
+}
+
+function unsubscribeUrl(email) {
+  const params = new URLSearchParams({ email, token: unsubscribeToken(email) });
+  return `${siteUrl()}/api/newsletter/unsubscribe?${params.toString()}`;
 }
 
 function getWriteToken() {
@@ -50,6 +71,70 @@ function senderFrom(name, email) {
   return name && !String(email || '').includes('<') ? `${name} <${address}>` : `${name || 'Bogeys2Birdies'} <${address}>`;
 }
 
+function welcomeEmailHtml({ email, unsubscribeLink }) {
+  const baseUrl = siteUrl();
+  const logoUrl = `${baseUrl}/bogeys2birdies-logo.png`;
+  return [
+    '<!doctype html>',
+    '<html>',
+    '<body style="margin:0;background:#f4f1e6;color:#111713;font-family:Arial,Helvetica,sans-serif;line-height:1.55;">',
+    '<div style="display:none;max-height:0;overflow:hidden;color:transparent;">Welcome to Bogeys2Birdies. Your first B2B Dispatch is confirmed.</div>',
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#f4f1e6;margin:0;padding:28px 14px;">',
+    '<tr><td align="center">',
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:660px;background:#fffdf6;border:1px solid #ded8c8;">',
+    '<tr><td style="padding:28px 28px 18px;border-bottom:1px solid #e3ddcf;">',
+    `<img src="${logoUrl}" width="86" height="86" alt="Bogeys2Birdies" style="display:block;width:86px;height:86px;object-fit:contain;margin:0 0 18px;">`,
+    '<p style="margin:0 0 8px;font-size:12px;letter-spacing:2.2px;text-transform:uppercase;color:#31683c;font-weight:700;">B2B Dispatch</p>',
+    '<h1 style="margin:0;font-size:40px;line-height:1.02;letter-spacing:-1.5px;color:#111713;">You are on the list.</h1>',
+    '</td></tr>',
+    '<tr><td style="padding:30px 28px 10px;">',
+    '<p style="margin:0 0 18px;font-size:18px;color:#1b241d;">Thanks for joining Bogeys2Birdies. I will send useful golf lessons, testing notes and progress updates when there is something worth sharing.</p>',
+    '<p style="margin:0 0 24px;font-size:16px;color:#49524b;">No tour gossip. No miracle swing tips. Just honest findings from the project, written for golfers trying to get a little better without making the game feel like homework.</p>',
+    '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#d7eb45;margin:24px 0;">',
+    '<tr><td style="padding:22px 24px;">',
+    '<p style="margin:0 0 6px;font-size:12px;letter-spacing:1.8px;text-transform:uppercase;font-weight:700;color:#111713;">What to expect</p>',
+    '<p style="margin:0;font-size:17px;color:#111713;">One useful golf lesson, experiment or review. Free. Unsubscribe whenever you like.</p>',
+    '</td></tr>',
+    '</table>',
+    '<p style="margin:0 0 22px;font-size:16px;color:#49524b;">You signed up using this email address:</p>',
+    `<p style="margin:0 0 26px;font-size:15px;color:#111713;font-weight:700;">${escapeHtml(email)}</p>`,
+    `<a href="${baseUrl}/journal" style="display:inline-block;background:#111713;color:#ffffff;text-decoration:none;padding:14px 18px;font-weight:700;font-size:14px;">Read the latest articles</a>`,
+    '</td></tr>',
+    '<tr><td style="padding:26px 28px 30px;border-top:1px solid #e3ddcf;background:#fbfaf6;">',
+    '<p style="margin:0 0 12px;font-size:12px;color:#66736a;">You are receiving this because you subscribed to the Bogeys2Birdies newsletter. We use your email address only to send the newsletter and related Bogeys2Birdies updates. You can withdraw consent at any time.</p>',
+    `<p style="margin:0 0 12px;font-size:12px;color:#66736a;"><a href="${unsubscribeLink}" style="color:#31683c;text-decoration:underline;">Unsubscribe from Bogeys2Birdies emails</a> or reply to this email for help. Read the <a href="${baseUrl}/privacy-policy" style="color:#31683c;text-decoration:underline;">privacy policy</a>.</p>`,
+    '<p style="margin:0;font-size:12px;color:#66736a;">Bogeys2Birdies, United Kingdom. Contact: <a href="mailto:hello@bogeys2birdies.co.uk" style="color:#31683c;text-decoration:underline;">hello@bogeys2birdies.co.uk</a></p>',
+    '</td></tr>',
+    '</table>',
+    '</td></tr>',
+    '</table>',
+    '</body>',
+    '</html>',
+  ].join('');
+}
+
+function welcomeEmailText({ email, unsubscribeLink }) {
+  const baseUrl = siteUrl();
+  return [
+    'Welcome to Bogeys2Birdies.',
+    '',
+    'You are on the list. I will send useful golf lessons, testing notes and progress updates when there is something worth sharing.',
+    '',
+    'No tour gossip. No miracle swing tips. Just honest findings from the project.',
+    '',
+    `Subscribed email: ${email}`,
+    '',
+    `Read the latest articles: ${baseUrl}/journal`,
+    '',
+    'You are receiving this because you subscribed to the Bogeys2Birdies newsletter. We use your email address only to send the newsletter and related Bogeys2Birdies updates. You can withdraw consent at any time.',
+    '',
+    `Unsubscribe: ${unsubscribeLink}`,
+    `Privacy policy: ${baseUrl}/privacy-policy`,
+    'Contact: hello@bogeys2birdies.co.uk',
+    'Bogeys2Birdies, United Kingdom.',
+  ].join('\n');
+}
+
 async function sendWelcomeEmail({ email, settings }) {
   if (!process.env.RESEND_API_KEY) return { sent: false, reason: 'missing_resend_api_key' };
 
@@ -57,6 +142,7 @@ async function sendWelcomeEmail({ email, settings }) {
   const replyToEmail = process.env.NEWSLETTER_REPLY_TO_EMAIL || settings?.replyToEmail || fromEmail;
   const fromName = settings?.fromName || 'Bogeys2Birdies';
   if (!fromEmail) return { sent: false, reason: 'missing_from_email' };
+  const unsubscribeLink = unsubscribeUrl(email);
 
   let response;
   try {
@@ -67,25 +153,13 @@ async function sendWelcomeEmail({ email, settings }) {
         from: senderFrom(fromName, fromEmail),
         to: [email],
         reply_to: emailAddress(replyToEmail) || undefined,
+        headers: {
+          'List-Unsubscribe': `<${unsubscribeLink}>`,
+          'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+        },
         subject: 'You are on the Bogeys2Birdies list',
-        html: [
-          '<!doctype html><html><body style="margin:0;background:#fbfaf6;color:#111713;font-family:Arial,sans-serif;line-height:1.55;">',
-          '<main style="max-width:620px;margin:0 auto;padding:32px 20px;">',
-          '<h1 style="font-size:32px;line-height:1.05;margin:0 0 20px;">Welcome to Bogeys2Birdies</h1>',
-          '<p>You are on the list. I will send useful golf lessons, experiments and progress notes when there is something worth sharing.</p>',
-          '<p>No spam. No miracle swing tips. You can unsubscribe whenever you like.</p>',
-          '<p>Thanks for following the project.</p>',
-          '</main></body></html>',
-        ].join(''),
-        text: [
-          'Welcome to Bogeys2Birdies.',
-          '',
-          'You are on the list. I will send useful golf lessons, experiments and progress notes when there is something worth sharing.',
-          '',
-          'No spam. No miracle swing tips. You can unsubscribe whenever you like.',
-          '',
-          'Thanks for following the project.',
-        ].join('\n'),
+        html: welcomeEmailHtml({ email, unsubscribeLink }),
+        text: welcomeEmailText({ email, unsubscribeLink }),
       }),
     });
   } catch (error) {
