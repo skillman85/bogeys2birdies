@@ -14,6 +14,14 @@ export async function generateMetadata() {
 export default async function Home() {
   const content = await getHomeContent(defaultHomeContent);
   const settings = { ...defaultHomeContent.settings, ...content.settings };
+  const startingHandicap = Number(settings.startingHandicap);
+  const currentHandicap = Number(settings.currentHandicap);
+  const targetHandicap = Number(settings.targetHandicap);
+  const handicapRange = startingHandicap - targetHandicap;
+  const calculatedProgress = Number.isFinite(handicapRange) && handicapRange > 0 && Number.isFinite(currentHandicap)
+    ? Math.min(100, Math.max(0, ((startingHandicap - currentHandicap) / handicapRange) * 100))
+    : 0;
+  const scaleMidpoint = Number.isFinite(startingHandicap) && Number.isFinite(targetHandicap) ? (startingHandicap + targetHandicap) / 2 : null;
   const experiments = settings.featuredExperiments?.length ? settings.featuredExperiments : (content.experiments?.length ? content.experiments : defaultHomeContent.experiments);
   const articles = settings.featuredArticles?.length ? settings.featuredArticles : (content.articles?.length ? content.articles : defaultHomeContent.articles);
   return <Page siteSettings={content.site || defaultHomeContent.site}>
@@ -28,7 +36,7 @@ export default async function Home() {
       <section className="road section-shell">
         <div className="section-heading split"><div><Eyebrow>{settings.roadEyebrow}</Eyebrow><h2>{settings.roadHeading}</h2></div><p>{settings.roadDescription}</p></div>
         <div className="progress-panel">
-          <div className="progress-main"><div className="progress-head"><span>HANDICAP INDEX</span><strong>{settings.currentHandicap} <small>→ {settings.targetHandicap}</small></strong></div><div className="progress-track"><span style={{width:`${settings.progressPercent}%`}} /></div><div className="progress-scale"><span>10.0</span><span>7.5</span><span>{settings.targetHandicap}</span></div></div>
+          <div className="progress-main"><div className="progress-head"><span>HANDICAP INDEX</span><strong>{settings.currentHandicap} <small>→ {settings.targetHandicap}</small></strong></div><div className="progress-track"><span style={{width:`${calculatedProgress}%`}} /></div><div className="progress-scale"><span>{startingHandicap.toFixed(1)}</span><span>{scaleMidpoint?.toFixed(1)}</span><span>{targetHandicap.toFixed(1)}</span></div></div>
           <div className="stats-grid">{settings.stats.map((stat) => <Stat key={stat.label} {...stat}/>)}</div>
         </div>
         <Link className="big-link" href="/data">See every number behind the project <Chevron /></Link>

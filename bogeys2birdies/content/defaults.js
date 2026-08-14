@@ -40,7 +40,7 @@ export const defaultHomepageArticles = [
 export const defaultHomepageSettings = {
   heroEyebrow: 'THE ORDINARY GOLFER PROJECT', heroTitleLineOne: 'Less bogey.', heroTitleLineTwo: 'More birdie.',
   heroDescription: 'One club golfer testing what actually makes us better — with real rounds, honest experiments and the numbers to prove it.', heroImage: images.hero,
-  currentHandicap: '8.8', targetHandicap: '5.0', progressPercent: 46,
+  startingHandicap: '8.8', currentHandicap: '8.8', targetHandicap: '3.0', progressPercent: 0,
   heroPrimaryCtaLabel: 'Follow the road to 3', heroPrimaryCtaHref: '/project', heroSecondaryCtaLabel: 'Explore experiments', heroSecondaryCtaHref: '/experiments',
   roadEyebrow: 'ROAD TO 3', roadHeading: 'The game, measured.', roadDescription: 'Not vibes. Not range sessions that “felt good”. Every round feeds the same question: what actually moves the handicap?',
   stats: [{ value: '79.8', label: 'Scoring avg', detail: '↓ 1.4 this season' }, { value: '48%', label: 'Greens in reg', detail: '↑ 6 pts' }, { value: '31.2', label: 'Putts / round', detail: '↓ 1.1' }, { value: '24', label: 'Rounds tracked', detail: 'Full shot data' }],

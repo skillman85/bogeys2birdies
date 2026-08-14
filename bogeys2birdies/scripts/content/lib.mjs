@@ -143,7 +143,7 @@ async function references(type, slugs) {
 }
 
 export async function updateSettings(input) {
-  const homepageAllowed = ['currentHandicap', 'targetHandicap', 'progressPercent'];
+  const homepageAllowed = ['startingHandicap', 'currentHandicap', 'targetHandicap', 'progressPercent'];
   const siteAllowed = ['siteTitle', 'siteDescription', 'footerTagline', 'copyright', 'defaultSeo'];
   const homepagePatch = Object.fromEntries(homepageAllowed.filter((key) => input[key] !== undefined).map((key) => [key, input[key]]));
   const sitePatch = Object.fromEntries(siteAllowed.filter((key) => input[key] !== undefined).map((key) => [key, input[key]]));
