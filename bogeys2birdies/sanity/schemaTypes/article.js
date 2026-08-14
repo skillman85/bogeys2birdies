@@ -1,10 +1,20 @@
 import { defineField, defineType } from 'sanity';
+import { CategorySelectInput } from '../components/CategorySelectInput';
 import { editorialFields } from './shared';
 
 export const article = defineType({
   name: 'article', title: 'Articles', type: 'document', fields: [
     ...editorialFields,
-    defineField({ name: 'categoryRef', title: 'Category', type: 'reference', to: [{ type: 'category' }], description: 'Choose a category or use “Create new” to add one.', validation: (rule) => rule.required() }),
+    defineField({
+      name: 'categoryRef',
+      title: 'Category',
+      type: 'reference',
+      to: [{ type: 'category' }],
+      options: { disableNew: true },
+      components: { input: CategorySelectInput },
+      description: 'Choose one of the categories already created in the Categories section.',
+      validation: (rule) => rule.required(),
+    }),
     defineField({ name: 'category', title: 'Legacy category', type: 'string', hidden: true }),
     defineField({ name: 'readingTime', title: 'Reading time (minutes)', type: 'number', validation: (rule) => rule.positive().integer() }),
   ],
