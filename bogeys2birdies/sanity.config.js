@@ -6,12 +6,14 @@ import { schemaTypes } from './sanity/schemaTypes';
 import { structure } from './sanity/structure';
 import { createSeoSuggestionAction } from './sanity/actions/suggestSeo';
 import { BrandIcon } from './sanity/components/BrandIcon.jsx';
+import { SeasonImportTool } from './sanity/components/SeasonImportTool.jsx';
 
 const singletonTypes = new Set(['homepageSettings', 'siteSettings', 'pageSettings', 'seasonData']);
 const editorialTypes = new Set(['article', 'experiment', 'gearReview']);
 
 export default defineConfig({
   name: 'default', title: 'Bogeys2Birdies CMS', icon: BrandIcon, basePath: '/studio', projectId, dataset,
+  tools: (previousTools) => [...previousTools, { name: 'precision-golf-import', title: 'Import golf data', component: SeasonImportTool }],
   plugins: [structureTool({ structure }), visionTool()],
   schema: {
     types: schemaTypes,

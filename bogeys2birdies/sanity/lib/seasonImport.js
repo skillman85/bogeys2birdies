@@ -1,1 +1,44 @@
-export async function importSeasonData(client,data){if(!data||data.version!==1||!data.player||!data.season||!data.summary||!Array.isArray(data.rounds))throw new Error('Invalid PrecisionGolf season export.');if(!Number.isFinite(Number(data.player.currentHandicapIndex))||!Number.isFinite(Number(data.season.includedRoundCount)))throw new Error('Season export is missing required numeric values.');const keyed=(items,prefix)=>(items||[]).map((item,index)=>({_key:`${prefix}-${index+1}`,_type:'object',...item}));const history=[...(data.handicapHistory||[])].sort((a,b)=>new Date(a.date)-new Date(b.date));const currentHandicap=Number(data.player.currentHandicapIndex??history.at(-1)?.handicap);const startEntry=history.find(item=>Number(item.handicap)===8.8)||history[0];const latestRound=[...data.rounds].sort((a,b)=>new Date(b.date)-new Date(a.date))[0];await client.createOrReplace({_id:'seasonData',_type:'seasonData',year:data.season.year,exportedAt:data.exportedAt||new Date().toISOString(),playerName:data.player.name,homeClub:data.player.homeClub,roundCount:data.season.includedRoundCount,firstRoundDate:data.season.firstRoundDate,latestRoundDate:data.season.latestRoundDate,latestRoundId:latestRound?.id,summary:data.summary,handicapHistory:keyed(history.map(({date,handicap})=>({date,handicap})),'handicap'),monthlyCheckpoints:keyed(data.trends?.monthlyCheckpoints,'month'),parScoring:keyed(data.parScoring,'par'),recentRounds:keyed((data.trends?.recentRoundScores||[]).slice(0,10),'round')});const homepageStats=[{_key:'scoring-average',_type:'stat',value:data.summary.averageGross.toFixed(1),label:'Scoring average',detail:`Last 10: ${data.trends.last10AverageGross.toFixed(1)}`},{_key:'gir',_type:'stat',value:`${data.summary.girPercent}%`,label:'GIR',detail:`${data.season.includedRoundCount} rounds`},{_key:'fairways',_type:'stat',value:`${data.summary.fairwaysHitPercent}%`,label:'Fairways',detail:`Penalties ${data.summary.penaltiesPerRound.toFixed(1)}/round`},{_key:'putts',_type:'stat',value:data.summary.averagePutts.toFixed(1),label:'Putts',detail:`Scrambling ${data.summary.scramblingPercent}%`}];const mix=data.summary.scoringMixPerRound||{};const dataStats=[...homepageStats,{_key:'rounds',_type:'stat',value:String(data.season.includedRoundCount),label:'Rounds played',detail:`${data.season.year} season`},{_key:'best-gross',_type:'stat',value:String(data.summary.bestGross),label:'Best gross',detail:`Best Stableford ${data.summary.bestStableford}`},{_key:'stableford',_type:'stat',value:data.summary.averageStableford.toFixed(1),label:'Stableford avg.',detail:`Best ${data.summary.bestStableford}`},{_key:'scrambling',_type:'stat',value:`${data.summary.scramblingPercent}%`,label:'Scrambling',detail:`Sand saves ${data.summary.sandSavePercent}%`},{_key:'penalties',_type:'stat',value:data.summary.penaltiesPerRound.toFixed(1),label:'Penalties / round',detail:'Lower is better'},{_key:'birdies',_type:'stat',value:Number(mix.birdies||0).toFixed(1),label:'Birdies / round',detail:'Scoring opportunities'},{_key:'pars',_type:'stat',value:Number(mix.pars||0).toFixed(1),label:'Pars / round',detail:'Scoring foundation'},{_key:'doubles',_type:'stat',value:Number(mix.doublesOrWorse||0).toFixed(1),label:'Doubles+ / round',detail:'Main scoring leak'}];const milestones=history.map((item,index)=>({_key:`handicap-${index+1}`,_type:'handicapMilestone',label:new Intl.DateTimeFormat('en-GB',{day:'numeric',month:'short'}).format(new Date(item.date)),handicap:item.handicap}));await client.patch('homepageSettings').set({startingHandicap:String(startEntry?.handicap??8.8),currentHandicap:currentHandicap.toFixed(1),stats:homepageStats}).commit();await client.patch('pageSettings-data').set({stats:dataStats,handicapMilestones:milestones}).commit();return{rounds:data.season.includedRoundCount,handicapEntries:history.length,currentHandicap,latestRoundId:latestRound?.id};}
+export async function importSeasonData(client, data) {
+  if (!data || data.version !== 1 || !data.player || !data.season || !data.summary || !Array.isArray(data.rounds)) throw new Error('Invalid PrecisionGolf season export.');
+  if (!Number.isFinite(Number(data.player.currentHandicapIndex)) || !Number.isFinite(Number(data.season.includedRoundCount))) throw new Error('Season export is missing required numeric values.');
+
+  const keyed = (items, prefix) => (items || []).map((item, index) => ({ _key: `${prefix}-${index + 1}`, _type: 'object', ...item }));
+  const history = [...(data.handicapHistory || [])].sort((a, b) => new Date(a.date) - new Date(b.date));
+  const currentHandicap = Number(data.player.currentHandicapIndex ?? history.at(-1)?.handicap);
+  const startEntry = history.find((item) => Number(item.handicap) === 8.8) || history[0];
+  const latestRound = [...data.rounds].sort((a, b) => new Date(b.date) - new Date(a.date))[0];
+
+  const seasonDocument = {
+    _id: 'seasonData', _type: 'seasonData', year: data.season.year, exportedAt: data.exportedAt || new Date().toISOString(),
+    playerName: data.player.name, homeClub: data.player.homeClub, roundCount: data.season.includedRoundCount,
+    firstRoundDate: data.season.firstRoundDate, latestRoundDate: data.season.latestRoundDate, latestRoundId: latestRound?.id,
+    summary: data.summary, handicapHistory: keyed(history.map(({ date, handicap }) => ({ date, handicap })), 'handicap'),
+    monthlyCheckpoints: keyed(data.trends?.monthlyCheckpoints, 'month'), parScoring: keyed(data.parScoring, 'par'),
+    recentRounds: keyed((data.trends?.recentRoundScores || []).slice(0, 10), 'round'),
+  };
+
+  const homepageStats = [
+    { _key: 'scoring-average', _type: 'stat', value: data.summary.averageGross.toFixed(1), label: 'Scoring average', detail: `Last 10: ${data.trends.last10AverageGross.toFixed(1)}` },
+    { _key: 'gir', _type: 'stat', value: `${data.summary.girPercent}%`, label: 'GIR', detail: `${data.season.includedRoundCount} rounds` },
+    { _key: 'fairways', _type: 'stat', value: `${data.summary.fairwaysHitPercent}%`, label: 'Fairways', detail: `Penalties ${data.summary.penaltiesPerRound.toFixed(1)}/round` },
+    { _key: 'putts', _type: 'stat', value: data.summary.averagePutts.toFixed(1), label: 'Putts', detail: `Scrambling ${data.summary.scramblingPercent}%` },
+  ];
+  const mix = data.summary.scoringMixPerRound || {};
+  const dataStats = [...homepageStats,
+    { _key: 'rounds', _type: 'stat', value: String(data.season.includedRoundCount), label: 'Rounds played', detail: `${data.season.year} season` },
+    { _key: 'best-gross', _type: 'stat', value: String(data.summary.bestGross), label: 'Best gross', detail: `Best Stableford ${data.summary.bestStableford}` },
+    { _key: 'stableford', _type: 'stat', value: data.summary.averageStableford.toFixed(1), label: 'Stableford avg.', detail: `Best ${data.summary.bestStableford}` },
+    { _key: 'scrambling', _type: 'stat', value: `${data.summary.scramblingPercent}%`, label: 'Scrambling', detail: `Sand saves ${data.summary.sandSavePercent}%` },
+    { _key: 'penalties', _type: 'stat', value: data.summary.penaltiesPerRound.toFixed(1), label: 'Penalties / round', detail: 'Lower is better' },
+    { _key: 'birdies', _type: 'stat', value: Number(mix.birdies || 0).toFixed(1), label: 'Birdies / round', detail: 'Scoring opportunities' },
+    { _key: 'pars', _type: 'stat', value: Number(mix.pars || 0).toFixed(1), label: 'Pars / round', detail: 'Scoring foundation' },
+    { _key: 'doubles', _type: 'stat', value: Number(mix.doublesOrWorse || 0).toFixed(1), label: 'Doubles+ / round', detail: 'Main scoring leak' },
+  ];
+  const milestones = history.map((item, index) => ({ _key: `handicap-${index + 1}`, _type: 'handicapMilestone', label: new Intl.DateTimeFormat('en-GB', { day: 'numeric', month: 'short' }).format(new Date(item.date)), handicap: item.handicap }));
+  await client.transaction()
+    .createOrReplace(seasonDocument)
+    .patch('homepageSettings', { set: { startingHandicap: String(startEntry?.handicap ?? 8.8), currentHandicap: currentHandicap.toFixed(1), stats: homepageStats } })
+    .patch('pageSettings-data', { set: { stats: dataStats, handicapMilestones: milestones } })
+    .commit();
+  return { rounds: data.season.includedRoundCount, handicapEntries: history.length, currentHandicap, latestRoundId: latestRound?.id };
+}
