@@ -28,7 +28,7 @@ export default async function Home() {
       <section className="road section-shell">
         <div className="section-heading split"><div><Eyebrow>{settings.roadEyebrow}</Eyebrow><h2>{settings.roadHeading}</h2></div><p>{settings.roadDescription}</p></div>
         <div className="progress-panel">
-          <div className="progress-main"><div className="progress-head"><span>HANDICAP INDEX</span><strong>{settings.currentHandicap} <small>→ {settings.targetHandicap}</small></strong></div><div className="progress-track"><span style={{width:`${settings.progressPercent}%`}} /></div><div className="progress-scale"><span>10.0</span><span>7.5</span><span>5.0</span></div></div>
+          <div className="progress-main"><div className="progress-head"><span>HANDICAP INDEX</span><strong>{settings.currentHandicap} <small>→ {settings.targetHandicap}</small></strong></div><div className="progress-track"><span style={{width:`${settings.progressPercent}%`}} /></div><div className="progress-scale"><span>10.0</span><span>7.5</span><span>{settings.targetHandicap}</span></div></div>
           <div className="stats-grid">{settings.stats.map((stat) => <Stat key={stat.label} {...stat}/>)}</div>
         </div>
         <Link className="big-link" href="/data">See every number behind the project <Chevron /></Link>
