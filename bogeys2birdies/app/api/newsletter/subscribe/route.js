@@ -51,48 +51,52 @@ function senderFrom(name, email) {
 }
 
 async function sendWelcomeEmail({ email, settings }) {
-  if (!process.env.RESEND_API_KEY) return false;
+  if (!process.env.RESEND_API_KEY) return { sent: false, reason: 'missing_resend_api_key' };
 
   const fromEmail = process.env.NEWSLETTER_FROM_EMAIL || settings?.fromEmail;
   const replyToEmail = process.env.NEWSLETTER_REPLY_TO_EMAIL || settings?.replyToEmail || fromEmail;
   const fromName = settings?.fromName || 'Bogeys2Birdies';
-  if (!fromEmail) return false;
+  if (!fromEmail) return { sent: false, reason: 'missing_from_email' };
 
-  const response = await fetch('https://api.resend.com/emails', {
-    method: 'POST',
-    headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      from: senderFrom(fromName, fromEmail),
-      to: [email],
-      reply_to: emailAddress(replyToEmail) || undefined,
-      subject: 'You are on the Bogeys2Birdies list',
-      html: [
-        '<!doctype html><html><body style="margin:0;background:#fbfaf6;color:#111713;font-family:Arial,sans-serif;line-height:1.55;">',
-        '<main style="max-width:620px;margin:0 auto;padding:32px 20px;">',
-        '<h1 style="font-size:32px;line-height:1.05;margin:0 0 20px;">Welcome to Bogeys2Birdies</h1>',
-        '<p>You are on the list. I will send useful golf lessons, experiments and progress notes when there is something worth sharing.</p>',
-        '<p>No spam. No miracle swing tips. You can unsubscribe whenever you like.</p>',
-        '<p>Thanks for following the project.</p>',
-        '</main></body></html>',
-      ].join(''),
-      text: [
-        'Welcome to Bogeys2Birdies.',
-        '',
-        'You are on the list. I will send useful golf lessons, experiments and progress notes when there is something worth sharing.',
-        '',
-        'No spam. No miracle swing tips. You can unsubscribe whenever you like.',
-        '',
-        'Thanks for following the project.',
-      ].join('\n'),
-    }),
-  });
+  let response;
+  try {
+    response = await fetch('https://api.resend.com/emails', {
+      method: 'POST',
+      headers: { Authorization: `Bearer ${process.env.RESEND_API_KEY}`, 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        from: senderFrom(fromName, fromEmail),
+        to: [email],
+        reply_to: emailAddress(replyToEmail) || undefined,
+        subject: 'You are on the Bogeys2Birdies list',
+        html: [
+          '<!doctype html><html><body style="margin:0;background:#fbfaf6;color:#111713;font-family:Arial,sans-serif;line-height:1.55;">',
+          '<main style="max-width:620px;margin:0 auto;padding:32px 20px;">',
+          '<h1 style="font-size:32px;line-height:1.05;margin:0 0 20px;">Welcome to Bogeys2Birdies</h1>',
+          '<p>You are on the list. I will send useful golf lessons, experiments and progress notes when there is something worth sharing.</p>',
+          '<p>No spam. No miracle swing tips. You can unsubscribe whenever you like.</p>',
+          '<p>Thanks for following the project.</p>',
+          '</main></body></html>',
+        ].join(''),
+        text: [
+          'Welcome to Bogeys2Birdies.',
+          '',
+          'You are on the list. I will send useful golf lessons, experiments and progress notes when there is something worth sharing.',
+          '',
+          'No spam. No miracle swing tips. You can unsubscribe whenever you like.',
+          '',
+          'Thanks for following the project.',
+        ].join('\n'),
+      }),
+    });
+  } catch (error) {
+    return { sent: false, reason: 'resend_request_failed', detail: error.message };
+  }
 
   if (!response.ok) {
     const errorText = await response.text().catch(() => '');
-    console.error(`Newsletter welcome email failed with status ${response.status}. ${errorText}`);
-    return false;
+    return { sent: false, reason: 'resend_rejected', status: response.status, detail: errorText };
   }
-  return true;
+  return { sent: true };
 }
 
 export async function POST(request) {
@@ -144,13 +148,21 @@ export async function POST(request) {
     createdAt: timestamp,
   });
 
-  let welcomeEmailSent = false;
+  let welcomeEmail = { sent: false, reason: 'not_attempted' };
   try {
     const settings = await client.fetch('*[_id == "newsletterSettings"][0]{fromName,fromEmail,replyToEmail}');
-    welcomeEmailSent = await sendWelcomeEmail({ email, settings });
+    welcomeEmail = await sendWelcomeEmail({ email, settings });
   } catch (error) {
-    console.error('Newsletter welcome email skipped or failed:', error);
+    welcomeEmail = { sent: false, reason: 'welcome_email_error', detail: error.message };
   }
 
-  return json({ ok: true, welcomeEmailSent }, 202);
+  if (!welcomeEmail.sent) {
+    console.error('Newsletter welcome email was not sent.', {
+      reason: welcomeEmail.reason,
+      status: welcomeEmail.status,
+      detail: welcomeEmail.detail,
+    });
+  }
+
+  return json({ ok: true, welcomeEmailSent: welcomeEmail.sent, welcomeEmailStatus: welcomeEmail.reason }, 202);
 }
