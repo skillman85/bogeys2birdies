@@ -10,7 +10,7 @@ export const pageSettings = defineType({
     defineField({ name: 'eyebrow', type: 'string', validation: (rule) => rule.required() }),
     defineField({ name: 'title', type: 'string', validation: (rule) => rule.required() }),
     defineField({ name: 'description', type: 'text', rows: 3, validation: (rule) => rule.required() }),
-    defineField({ name: 'stats', type: 'array', of: [defineArrayMember({ type: 'stat' })], validation: (rule) => rule.max(4) }),
+    defineField({ name: 'stats', type: 'array', of: [defineArrayMember({ type: 'stat' })], validation: (rule) => rule.max(12) }),
     defineField({ name: 'secondaryHeading', type: 'string' }),
     defineField({ name: 'paragraphs', type: 'array', of: [defineArrayMember({ type: 'text', rows: 3 })] }),
     defineField({ name: 'chartEyebrow', type: 'string' }),
