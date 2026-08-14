@@ -33,7 +33,7 @@
     "sanity": "^6.9.2",
     "styled-components": "6.1"
   },
-  "devDependencies": {
+  "optionalDependencies": {
     "@rolldown/binding-win32-x64-msvc": "^1.2.4"
   }
 }
