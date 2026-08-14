@@ -6,12 +6,13 @@ export function Comments({ contentId, contentType, contentTitle, initialComments
   const [submitting, setSubmitting] = useState(false);
   async function submit(event) {
     event.preventDefault(); setSubmitting(true); setStatus('');
-    const form = new FormData(event.currentTarget);
+    const formElement = event.currentTarget;
+    const form = new FormData(formElement);
     try {
       const response = await fetch('/api/comments', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ author: form.get('author'), message: form.get('message'), website: form.get('website'), contentId, contentType, contentTitle }) });
       const result = await response.json();
       if (!response.ok) throw new Error(result.error || 'Unable to submit comment.');
-      event.currentTarget.reset(); setStatus('Thanks — your comment is awaiting moderation.');
+      formElement.reset(); setStatus('Thanks — your comment is awaiting moderation.');
     } catch (error) { setStatus(error.message); } finally { setSubmitting(false); }
   }
   return <section className="comments-section" aria-labelledby="comments-heading">
