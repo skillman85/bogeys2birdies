@@ -29,7 +29,12 @@ export const structure = (S) =>
         singleton(S, 'pageSettings', 'pageSettings-gear', 'Gear page'),
       ])),
       S.divider(),
+      S.listItem().id('precision-golf-import').title('Import golf data').child(
+        S.component().id('precision-golf-import-panel').title('Import Precision Golf data').component(SeasonImportTool),
+      ),
+      S.divider(),
       singleton(S, 'homepageSettings', 'homepageSettings', 'Homepage settings'),
       singleton(S, 'seasonData', 'seasonData', 'Season data'),
       singleton(S, 'siteSettings', 'siteSettings', 'Site settings'),
     ]);
+import { SeasonImportTool } from './components/SeasonImportTool.jsx';
