@@ -41,9 +41,10 @@ export const defaultHomepageSettings = {
   heroEyebrow: 'THE ORDINARY GOLFER PROJECT', heroTitleLineOne: 'Less bogey.', heroTitleLineTwo: 'More birdie.',
   heroDescription: 'One club golfer testing what actually makes us better — with real rounds, honest experiments and the numbers to prove it.', heroImage: images.hero,
   currentHandicap: '8.8', targetHandicap: '5.0', progressPercent: 46,
-  roadHeading: 'The game, measured.', roadDescription: 'Not vibes. Not range sessions that “felt good”. Every round feeds the same question: what actually moves the handicap?',
+  roadEyebrow: 'ROAD TO 5', roadHeading: 'The game, measured.', roadDescription: 'Not vibes. Not range sessions that “felt good”. Every round feeds the same question: what actually moves the handicap?',
   stats: [{ value: '79.8', label: 'Scoring avg', detail: '↓ 1.4 this season' }, { value: '48%', label: 'Greens in reg', detail: '↑ 6 pts' }, { value: '31.2', label: 'Putts / round', detail: '↓ 1.1' }, { value: '24', label: 'Rounds tracked', detail: 'Full shot data' }],
-  experimentsHeading: 'Golf advice.\nPut to the test.', experimentsDescription: 'We take the advice golfers hear every week and test it over enough real rounds to find out whether it actually helps.',
+  experimentsEyebrow: 'B2B EXPERIMENTS', experimentsHeading: 'Golf advice.\nPut to the test.', experimentsDescription: 'We take the advice golfers hear every week and test it over enough real rounds to find out whether it actually helps.',
+  journalEyebrow: 'FROM THE JOURNAL', journalHeading: 'Latest from B2B.',
   manifestoHeading: 'There’s enough golf advice on the internet.', manifestoEmphasis: 'We want to know what works.', manifestoDescription: 'Bogeys2Birdies is an honest record of the pursuit of better golf — the practice, the equipment, the bad decisions, the breakthroughs and the data behind all of it.',
   newsletterHeadingLineOne: 'One useful golf lesson.', newsletterHeadingLineTwo: 'Every Friday.', newsletterDescription: 'No tour gossip. No miracle swing tips. Just what we tested, what changed and what might help your game.',
 };

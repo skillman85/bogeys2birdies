@@ -26,7 +26,7 @@ export default async function Home() {
       </section>
 
       <section className="road section-shell">
-        <div className="section-heading split"><div><Eyebrow>ROAD TO 5</Eyebrow><h2>{settings.roadHeading}</h2></div><p>{settings.roadDescription}</p></div>
+        <div className="section-heading split"><div><Eyebrow>{settings.roadEyebrow}</Eyebrow><h2>{settings.roadHeading}</h2></div><p>{settings.roadDescription}</p></div>
         <div className="progress-panel">
           <div className="progress-main"><div className="progress-head"><span>HANDICAP INDEX</span><strong>{settings.currentHandicap} <small>→ {settings.targetHandicap}</small></strong></div><div className="progress-track"><span style={{width:`${settings.progressPercent}%`}} /></div><div className="progress-scale"><span>10.0</span><span>7.5</span><span>5.0</span></div></div>
           <div className="stats-grid">{settings.stats.map((stat) => <Stat key={stat.label} {...stat}/>)}</div>
@@ -35,7 +35,7 @@ export default async function Home() {
       </section>
 
       <section className="experiments dark-section">
-        <div className="section-shell"><div className="section-heading split light"><div><Eyebrow>B2B EXPERIMENTS</Eyebrow><h2>{settings.experimentsHeading.split('\n').map((line, index) => <span key={line}>{index > 0 && <br/>}{line}</span>)}</h2></div><p>{settings.experimentsDescription}</p></div>
+        <div className="section-shell"><div className="section-heading split light"><div><Eyebrow>{settings.experimentsEyebrow}</Eyebrow><h2>{settings.experimentsHeading.split('\n').map((line, index) => <span key={line}>{index > 0 && <br/>}{line}</span>)}</h2></div><p>{settings.experimentsDescription}</p></div>
         <div className="story-grid">
           {experiments.map((item) => <ExperimentCard key={item._id || item.slug} {...item} title={item.homeTitle || item.title} summary={item.homeSummary || item.summary} image={imageUrl(item.coverImage)}/>)}
         </div>
@@ -44,7 +44,7 @@ export default async function Home() {
 
       <section className="manifesto section-shell"><div className="manifesto-mark">“</div><blockquote>{settings.manifestoHeading}<br/><em>{settings.manifestoEmphasis}</em></blockquote><p>{settings.manifestoDescription}</p></section>
 
-      <section className="latest section-shell"><div className="section-heading split"><div><Eyebrow>FROM THE JOURNAL</Eyebrow><h2>Latest from B2B.</h2></div><Link href="/journal" className="text-link">View the journal <Chevron /></Link></div>
+      <section className="latest section-shell"><div className="section-heading split"><div><Eyebrow>{settings.journalEyebrow}</Eyebrow><h2>{settings.journalHeading}</h2></div><Link href="/journal" className="text-link">View the journal <Chevron /></Link></div>
         <div className="article-grid">{articles.map((item) => <ArticleCard key={item._id || item.slug} category={item.homeCategory || item.category} title={item.homeTitle || item.title} meta={item.homeMeta || formatArticleMeta(item)} image={imageUrl(item.homeImage || item.coverImage)}/>)}</div>
       </section>
 
