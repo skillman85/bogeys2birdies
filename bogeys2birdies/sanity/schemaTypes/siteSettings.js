@@ -6,6 +6,8 @@ export const siteSettings = defineType({
     defineField({ name: 'siteDescription', type: 'text', validation: (rule) => rule.required() }),
     defineField({ name: 'footerTagline', type: 'string' }),
     defineField({ name: 'copyright', type: 'string' }),
+    defineField({ name: 'instagramHandle', title: 'Instagram handle', type: 'string', initialValue: '@bogeys2birdie' }),
+    defineField({ name: 'instagramUrl', title: 'Instagram URL', type: 'url', initialValue: 'https://www.instagram.com/bogeys2birdie/' }),
     defineField({ name: 'defaultSeo', type: 'seo' }),
   ], preview: { prepare: () => ({ title: 'Site settings' }) },
 });

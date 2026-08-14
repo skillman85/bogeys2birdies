@@ -1,0 +1,92 @@
+import { createHash } from 'node:crypto';
+import { createClient } from '@sanity/client';
+
+const allowedHosts = new Set(['bogeys2birdies.co.uk', 'www.bogeys2birdies.co.uk', 'localhost', '127.0.0.1']);
+const windowMs = 10 * 60 * 1000;
+const maxSubmissions = 5;
+const rateLimits = globalThis.__b2bNewsletterRateLimits || new Map();
+globalThis.__b2bNewsletterRateLimits = rateLimits;
+
+function json(body, status) {
+  return Response.json(body, {
+    status,
+    headers: {
+      'Cache-Control': 'no-store',
+      'X-Content-Type-Options': 'nosniff',
+      'Referrer-Policy': 'same-origin',
+    },
+  });
+}
+
+function clean(value, maxLength) {
+  return String(value || '').replace(/[\u0000-\u001F\u007F]/g, ' ').replace(/\s+/g, ' ').trim().slice(0, maxLength);
+}
+
+function subscriberId(email) {
+  return `newsletterSubscriber-${createHash('sha256').update(email).digest('hex').slice(0, 32)}`;
+}
+
+function getWriteToken() {
+  return process.env.SANITY_WRITE_TOKEN || process.env.SANITY_API_WRITE_TOKEN;
+}
+
+function getClient() {
+  return createClient({
+    projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || 'kfysb6ye',
+    dataset: process.env.NEXT_PUBLIC_SANITY_DATASET || 'production',
+    apiVersion: '2026-08-14',
+    useCdn: false,
+    token: getWriteToken(),
+  });
+}
+
+export async function POST(request) {
+  const origin = request.headers.get('origin');
+  try {
+    if (!origin || !allowedHosts.has(new URL(origin).hostname)) return json({ error: 'Invalid request origin.' }, 403);
+  } catch {
+    return json({ error: 'Invalid request origin.' }, 403);
+  }
+
+  if (!request.headers.get('content-type')?.startsWith('application/json')) return json({ error: 'Invalid content type.' }, 415);
+  if (!getWriteToken()) return json({ error: 'Newsletter signup is temporarily unavailable.' }, 503);
+
+  const ip = request.headers.get('x-forwarded-for')?.split(',')[0]?.trim() || 'unknown';
+  const now = Date.now();
+  const recent = (rateLimits.get(ip) || []).filter((time) => now - time < windowMs);
+  if (recent.length >= maxSubmissions) return json({ error: 'Too many signup attempts. Please try again later.' }, 429);
+
+  let body;
+  try {
+    body = await request.json();
+  } catch {
+    return json({ error: 'Invalid request body.' }, 400);
+  }
+
+  if (body.website) return json({ ok: true }, 202);
+
+  const email = clean(body.email, 254).toLowerCase();
+  const consentText = clean(body.consentText, 500);
+  const source = clean(body.source || 'website', 80);
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return json({ error: 'Please enter a valid email address.' }, 400);
+  if (body.consent !== true) return json({ error: 'Please confirm you are happy to receive the newsletter.' }, 400);
+
+  recent.push(now);
+  rateLimits.set(ip, recent);
+
+  const timestamp = new Date().toISOString();
+  await getClient().createOrReplace({
+    _id: subscriberId(email),
+    _type: 'newsletterSubscriber',
+    email,
+    status: 'active',
+    source,
+    consentText,
+    consentedAt: timestamp,
+    unsubscribedAt: null,
+    updatedAt: timestamp,
+    createdAt: timestamp,
+  });
+
+  return json({ ok: true }, 202);
+}

@@ -2,6 +2,7 @@ import './globals.css';
 import './custom-pages.css';
 import { defaultSiteSettings } from '../content/defaults';
 import { getSiteSettings } from '../sanity/lib/content';
+import { CookieConsent } from '../components/CookieConsent';
 
 export async function generateMetadata() {
   const settings = await getSiteSettings(defaultSiteSettings);
@@ -17,7 +18,7 @@ export async function generateMetadata() {
 export default function RootLayout({ children }) {
   return (
     <html lang="en-GB">
-      <body>{children}</body>
+      <body>{children}<CookieConsent /></body>
     </html>
   );
 }

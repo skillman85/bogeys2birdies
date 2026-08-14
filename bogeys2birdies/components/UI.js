@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { slugifyCategory } from '../content/defaults';
+import { NewsletterSignup } from './NewsletterSignup';
 
 export const Chevron = () => <span aria-hidden="true">↗</span>;
 
@@ -37,6 +38,6 @@ export function Newsletter({ settings = {} }) {
   return <section className="newsletter">
     <div><Eyebrow>B2B Dispatch</Eyebrow><h2>{settings.newsletterHeadingLineOne || 'One useful golf lesson.'}<br/>{settings.newsletterHeadingLineTwo || 'Every Friday.'}</h2></div>
     <div><p>{settings.newsletterDescription || 'No tour gossip. No miracle swing tips. Just what we tested, what changed and what might help your game.'}</p>
-    <form><input type="email" placeholder="Your email address" aria-label="Email address"/><button type="button">Join the project</button></form><small>Free. Unsubscribe whenever you like.</small></div>
+    <NewsletterSignup settings={settings} /></div>
   </section>
 }

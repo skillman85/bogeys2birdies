@@ -10,7 +10,10 @@ export const images = {
 export const defaultSiteSettings = {
   siteTitle: 'Bogeys2Birdies | Real Golf. Real Progress.',
   siteDescription: 'An honest club golfer’s pursuit of better golf — experiments, data, gear and the road to a lower handicap.',
-  footerTagline: 'Real golf. Real progress.', copyright: '© 2026 Bogeys2Birdies',
+  footerTagline: 'Real golf. Real progress.',
+  copyright: '© 2026 Bogeys2Birdies',
+  instagramHandle: '@bogeys2birdie',
+  instagramUrl: 'https://www.instagram.com/bogeys2birdie/',
 };
 
 export const defaultExperiments = [

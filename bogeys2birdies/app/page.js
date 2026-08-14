@@ -14,6 +14,14 @@ export async function generateMetadata() {
 export default async function Home() {
   const content = await getHomeContent(defaultHomeContent);
   const settings = { ...defaultHomeContent.settings, ...content.settings };
+  const newsletterSettings = {
+    ...settings,
+    newsletterHeadingLineOne: content.newsletter?.headingLineOne || settings.newsletterHeadingLineOne,
+    newsletterHeadingLineTwo: content.newsletter?.headingLineTwo || settings.newsletterHeadingLineTwo,
+    newsletterDescription: content.newsletter?.description || settings.newsletterDescription,
+    consentText: content.newsletter?.consentText,
+    successMessage: content.newsletter?.successMessage,
+  };
   const startingHandicap = Number(settings.startingHandicap);
   const currentHandicap = Number(settings.currentHandicap);
   const targetHandicap = Number(settings.targetHandicap);
@@ -56,7 +64,7 @@ export default async function Home() {
         <div className="article-grid">{articles.map((item) => <ArticleCard key={item._id || item.slug} category={item.homeCategory || item.category} categorySlug={item.categorySlug} title={item.homeTitle || item.title} meta={item.homeMeta || formatArticleMeta(item)} image={imageUrl(item.homeImage || item.coverImage)} href={`/journal/${item.slug}`}/>)}</div>
       </section>
 
-      <Newsletter settings={settings}/>
+      <Newsletter settings={newsletterSettings}/>
     </main>
   </Page>
 }

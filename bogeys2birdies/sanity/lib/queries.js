@@ -6,6 +6,7 @@ const articleFields = `..., "slug": slug.current, "category": coalesce(categoryR
 export const HOME_QUERY = defineQuery(`{
   "settings": *[_type == "homepageSettings"][0]{..., heroImage ${imageFields}, featuredExperiments[]->{..., "slug": slug.current, coverImage ${imageFields}}, featuredArticles[]->{${articleFields}}},
   "site": *[_type == "siteSettings"][0],
+  "newsletter": *[_id == "newsletterSettings"][0],
   "experiments": *[_type == "experiment"] | order(featured desc, publishedAt desc)[0...3]{..., "slug": slug.current, coverImage ${imageFields}},
   "articles": *[_type == "article"] | order(featured desc, publishedAt desc)[0...3]{${articleFields}}
 }`);

@@ -2,8 +2,9 @@
 import Link from 'next/link';
 import { useState } from 'react';
 
-export function Header() {
+export function Header({ settings = {} }) {
   const [open, setOpen] = useState(false);
+  const instagramUrl = settings.instagramUrl || 'https://www.instagram.com/bogeys2birdie/';
   return (
     <header className="site-header">
       <div className="nav-shell">
@@ -16,6 +17,7 @@ export function Header() {
           <Link href="/journal">Journal</Link>
           <Link href="/gear">Gear</Link>
           <Link href="/data">Data</Link>
+          <a href={instagramUrl} target="_blank" rel="noreferrer noopener">Instagram</a>
         </nav>
         <button className="menu-btn" aria-label="Toggle menu" onClick={() => setOpen(!open)}>{open ? 'Close' : 'Menu'}</button>
       </div>
@@ -24,6 +26,8 @@ export function Header() {
 }
 
 export function Footer({ settings = {} }) {
+  const instagramUrl = settings.instagramUrl || 'https://www.instagram.com/bogeys2birdie/';
+  const instagramHandle = settings.instagramHandle || '@bogeys2birdie';
   return (
     <footer className="footer">
       <div>
@@ -31,7 +35,7 @@ export function Footer({ settings = {} }) {
         <p>{settings.footerTagline || 'Real golf. Real progress.'}</p>
       </div>
       <div className="footer-links">
-        <Link href="/project">The Project</Link><Link href="/experiments">Experiments</Link><Link href="/data">The Numbers</Link>
+        <Link href="/project">The Project</Link><Link href="/experiments">Experiments</Link><Link href="/data">The Numbers</Link><Link href="/privacy-policy">Privacy</Link><Link href="/cookie-policy">Cookies</Link><Link href="/terms-and-conditions">Terms</Link><Link href="/disclaimer">Disclaimer</Link><a href={instagramUrl} target="_blank" rel="noreferrer noopener">Instagram {instagramHandle}</a>
       </div>
       <p className="copyright">{settings.copyright || '© 2026 Bogeys2Birdies'}</p>
     </footer>
@@ -39,5 +43,5 @@ export function Footer({ settings = {} }) {
 }
 
 export function Page({ children, siteSettings }) {
-  return <><Header />{children}<Footer settings={siteSettings} /></>;
+  return <><Header settings={siteSettings} />{children}<Footer settings={siteSettings} /></>;
 }
