@@ -1,3 +1,5 @@
+import { SeasonImportTool } from './components/SeasonImportTool.jsx';
+
 const contentList = (S, type, title) =>
   S.documentTypeList(type)
     .title(title)
@@ -18,7 +20,7 @@ export const structure = (S) =>
       S.listItem().id('gearReview').title('Gear reviews').schemaType('gearReview').child(contentList(S, 'gearReview', 'Gear reviews')),
       S.listItem().id('category').title('Categories').schemaType('category').child(S.documentTypeList('category').title('Categories').defaultOrdering([{ field: 'title', direction: 'asc' }])),
       S.listItem().id('comment').title('Comments').schemaType('comment').child(S.documentTypeList('comment').title('Comments').defaultOrdering([{ field: 'createdAt', direction: 'desc' }])),
-      S.listItem().title('Newsletter').child(S.list().title('Newsletter').items([
+      S.listItem().id('newsletter').title('Newsletter').child(S.list().title('Newsletter').items([
         singleton(S, 'newsletterSettings', 'newsletterSettings', 'Newsletter settings'),
         S.listItem().id('newsletterCampaign').title('Campaigns').schemaType('newsletterCampaign').child(S.documentTypeList('newsletterCampaign').title('Newsletter campaigns').defaultOrdering([{ field: 'scheduledAt', direction: 'desc' }])),
         S.listItem().id('newsletterSubscriber').title('Subscribers').schemaType('newsletterSubscriber').child(S.documentTypeList('newsletterSubscriber').title('Newsletter subscribers').defaultOrdering([{ field: 'createdAt', direction: 'desc' }])),
@@ -42,4 +44,3 @@ export const structure = (S) =>
       singleton(S, 'seasonData', 'seasonData', 'Season data'),
       singleton(S, 'siteSettings', 'siteSettings', 'Site settings'),
     ]);
-import { SeasonImportTool } from './components/SeasonImportTool.jsx';

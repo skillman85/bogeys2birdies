@@ -40,15 +40,15 @@ export function Header({ settings = {} }) {
 
 export function Footer({ settings = {} }) {
   const instagramUrl = settings.instagramUrl || 'https://www.instagram.com/bogeys2birdie/';
-  const instagramHandle = settings.instagramHandle || '@bogeys2birdie';
   return (
     <footer className="footer">
       <div>
         <div className="brand footer-brand"><img className="brand-logo" src="/bogeys2birdies-logo.png" alt="Bogeys2Birdies" /></div>
         <p>{settings.footerTagline || 'Real golf. Real progress.'}</p>
+        <a className="instagram-footer-link footer-social-link" href={instagramUrl} target="_blank" rel="noreferrer noopener"><InstagramIcon /> Follow me on Instagram</a>
       </div>
       <div className="footer-links">
-        <Link href="/project">The Project</Link><Link href="/experiments">Experiments</Link><Link href="/data">The Numbers</Link><Link href="/privacy-policy">Privacy</Link><Link href="/cookie-policy">Cookies</Link><Link href="/terms-and-conditions">Terms</Link><Link href="/disclaimer">Disclaimer</Link><a className="instagram-footer-link" href={instagramUrl} target="_blank" rel="noreferrer noopener"><InstagramIcon /> Follow me on Instagram {instagramHandle}</a>
+        <Link href="/project">The Project</Link><Link href="/experiments">Experiments</Link><Link href="/data">The Numbers</Link><Link href="/privacy-policy">Privacy</Link><Link href="/cookie-policy">Cookies</Link><Link href="/terms-and-conditions">Terms</Link><Link href="/disclaimer">Disclaimer</Link>
       </div>
       <p className="copyright">{settings.copyright || '© 2026 Bogeys2Birdies'}</p>
     </footer>

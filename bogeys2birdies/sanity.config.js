@@ -8,7 +8,7 @@ import { createSeoSuggestionAction } from './sanity/actions/suggestSeo';
 import { BrandIcon } from './sanity/components/BrandIcon.jsx';
 import { SeasonImportTool } from './sanity/components/SeasonImportTool.jsx';
 
-const singletonTypes = new Set(['homepageSettings', 'siteSettings', 'pageSettings', 'seasonData']);
+const singletonTypes = new Set(['homepageSettings', 'siteSettings', 'newsletterSettings', 'pageSettings', 'seasonData']);
 const editorialTypes = new Set(['article', 'experiment', 'gearReview']);
 
 export default defineConfig({
