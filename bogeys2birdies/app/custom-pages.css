@@ -77,4 +77,31 @@
   .comments-section h2 { font-size: 38px; }
   .comment-form { padding: 22px; }
   .season-card-grid { grid-template-columns: 1fr; }
+  .data-page, .season-dashboard, .season-dashboard > section { min-width: 0; }
+  .chart-card { margin-top: 40px; padding: 24px 20px; }
+  .chart-heading { gap: 24px; }
+  .handicap-chart { overflow: hidden; margin-top: 20px; }
+  .handicap-chart svg { min-width: 0; width: 100%; }
+  .data-table-wrap { overflow: visible; border-top: 0; }
+  .data-table { min-width: 0; display: block; }
+  .data-table thead { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+  .data-table tbody { display: grid; gap: 16px; }
+  .data-table tr { display: grid; padding: 12px 18px; border: 1px solid var(--line); background: var(--paper); }
+  .data-table td { display: grid; grid-template-columns: minmax(92px, .75fr) minmax(0, 1.25fr); gap: 16px; padding: 9px 0; border-bottom: 1px solid var(--line); overflow-wrap: anywhere; }
+  .data-table td:last-child { border-bottom: 0; }
+  .data-table td::before { content: attr(data-label); font: 500 10px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+  .season-dashboard { gap: 72px; margin-top: 78px; }
+  .season-card { padding: 26px 22px; }
+}
+
+@media (max-width: 560px) {
+  .data-page > .stats-grid { grid-template-columns: 1fr; }
+  .data-page > .stats-grid .stat { min-height: 0; padding: 26px 18px; border-right: 0; }
+  .chart-heading { display: grid; }
+  .chart-heading strong { font-size: 44px; }
+  .chart-heading h2 { font-size: 32px; line-height: 1; }
+  .handicap-chart .node-label { font-size: 9px; }
+  .handicap-chart .node-value { font-size: 13px; }
+  .season-dashboard .section-heading h2 { font-size: 34px; }
+  .season-source { overflow-wrap: anywhere; }
 }
