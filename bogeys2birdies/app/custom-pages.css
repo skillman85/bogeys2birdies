@@ -30,9 +30,27 @@
 .content-detail-facts strong,.content-detail-verdict strong { font: 500 11px var(--mono); letter-spacing: .1em; text-transform: uppercase; }
 .content-detail-facts p,.content-detail-verdict p { color: var(--muted); font-size: 18px; }
 .content-detail-verdict { max-width: 820px; margin: 60px auto 0; padding: 32px; background: var(--cream); }
+.comments-section { max-width: 820px; margin: 90px auto 0; padding-top: 55px; border-top: 1px solid var(--line); }
+.comments-section h2 { margin: 0 0 34px; font-size: 48px; line-height: 1; letter-spacing: -.05em; }
+.comments-list { display: grid; gap: 18px; }
+.comment { padding: 24px; background: var(--cream); }
+.comment > div { display: flex; justify-content: space-between; gap: 20px; }
+.comment time { color: var(--muted); font: 10px var(--mono); }
+.comment p,.comments-empty { color: var(--muted); white-space: pre-wrap; overflow-wrap: anywhere; }
+.comment-form { display: grid; gap: 18px; margin-top: 48px; padding: 32px; border: 1px solid var(--line); }
+.comment-form h3 { margin: 0; font-size: 28px; }
+.comment-form > p { margin: -10px 0 4px; color: var(--muted); }
+.comment-form label { display: grid; gap: 7px; font-size: 13px; font-weight: 700; }
+.comment-form input,.comment-form textarea { width: 100%; padding: 13px; border: 1px solid var(--line); background: var(--paper); color: var(--ink); font: 15px var(--sans); }
+.comment-form button { justify-self: start; border: 0; padding: 14px 20px; background: var(--green); color: white; font-weight: 700; cursor: pointer; }
+.comment-form button:disabled { opacity: .6; cursor: wait; }
+.comment-honeypot { position: absolute !important; left: -10000px !important; width: 1px !important; height: 1px !important; overflow: hidden !important; }
+.comment-status { color: var(--green2) !important; font-weight: 700; }
 
 @media (max-width: 900px) {
   .custom-page-body { margin-top: 50px; font-size: 16px; }
   .custom-page-body h2 { font-size: 38px; }
   .content-detail-facts { grid-template-columns: 1fr; gap: 20px; }
+  .comments-section h2 { font-size: 38px; }
+  .comment-form { padding: 22px; }
 }

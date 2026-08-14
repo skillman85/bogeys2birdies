@@ -16,3 +16,4 @@ export const SITE_SETTINGS_QUERY = defineQuery(`*[_type == "siteSettings"][0]`);
 export const PAGE_SETTINGS_QUERY = defineQuery(`*[_type == "pageSettings" && pageKey == $pageKey][0]`);
 export const CUSTOM_PAGE_QUERY = defineQuery(`*[_type == "customPage" && slug.current == $slug][0]{..., "slug": slug.current}`);
 export const CONTENT_DETAIL_QUERY = defineQuery(`*[_type == $type && slug.current == $slug][0]{..., "slug": slug.current, coverImage ${imageFields}}`);
+export const COMMENTS_QUERY = defineQuery(`*[_type == "comment" && contentId == $contentId && status == "approved"] | order(createdAt asc){_id, author, message, createdAt}`);

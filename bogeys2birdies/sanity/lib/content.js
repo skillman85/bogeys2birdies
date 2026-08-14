@@ -1,5 +1,5 @@
 import { client } from './client';
-import { ARTICLES_QUERY, CONTENT_DETAIL_QUERY, CUSTOM_PAGE_QUERY, EXPERIMENTS_QUERY, GEAR_REVIEWS_QUERY, HOME_QUERY, PAGE_SETTINGS_QUERY, SITE_SETTINGS_QUERY } from './queries';
+import { ARTICLES_QUERY, COMMENTS_QUERY, CONTENT_DETAIL_QUERY, CUSTOM_PAGE_QUERY, EXPERIMENTS_QUERY, GEAR_REVIEWS_QUERY, HOME_QUERY, PAGE_SETTINGS_QUERY, SITE_SETTINGS_QUERY } from './queries';
 
 const options = { next: { revalidate: 60 } };
 
@@ -21,6 +21,7 @@ export const getGearReviews = (fallback) => fetchContent(GEAR_REVIEWS_QUERY, fal
 export const getSiteSettings = (fallback) => fetchContent(SITE_SETTINGS_QUERY, fallback);
 export const getCustomPage = (slug) => client ? client.fetch(CUSTOM_PAGE_QUERY, { slug }, options) : null;
 export const getContentDetail = (type, slug) => client ? client.fetch(CONTENT_DETAIL_QUERY, { type, slug }, options) : null;
+export const getComments = (contentId) => client ? client.fetch(COMMENTS_QUERY, { contentId }, options) : [];
 export async function getPageSettings(pageKey, fallback) {
   if (!client) return fallback;
   try {
