@@ -4,8 +4,10 @@ import { visionTool } from '@sanity/vision';
 import { dataset, projectId } from './sanity/env';
 import { schemaTypes } from './sanity/schemaTypes';
 import { structure } from './sanity/structure';
+import { createSeoSuggestionAction } from './sanity/actions/suggestSeo';
 
 const singletonTypes = new Set(['homepageSettings', 'siteSettings', 'pageSettings']);
+const editorialTypes = new Set(['article', 'experiment', 'gearReview']);
 
 export default defineConfig({
   name: 'default', title: 'Bogeys2Birdies CMS', basePath: '/studio', projectId, dataset,
@@ -15,8 +17,13 @@ export default defineConfig({
     templates: (templates) => templates.filter(({ schemaType }) => !singletonTypes.has(schemaType)),
   },
   document: {
-    actions: (actions, context) => singletonTypes.has(context.schemaType)
-      ? actions.filter(({ action }) => !['delete', 'duplicate'].includes(action))
-      : actions,
+    actions: (actions, context) => {
+      const availableActions = singletonTypes.has(context.schemaType)
+        ? actions.filter(({ action }) => !['delete', 'duplicate'].includes(action))
+        : actions;
+      return editorialTypes.has(context.schemaType)
+        ? [...availableActions, createSeoSuggestionAction(context)]
+        : availableActions;
+    },
   },
 });
