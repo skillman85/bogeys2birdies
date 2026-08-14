@@ -18,6 +18,8 @@ export const structure = (S) =>
       S.listItem().id('gearReview').title('Gear reviews').schemaType('gearReview').child(contentList(S, 'gearReview', 'Gear reviews')),
       S.divider(),
       S.listItem().title('Pages').child(S.list().title('Pages').items([
+        S.listItem().id('customPage').title('Custom pages').schemaType('customPage').child(S.documentTypeList('customPage').title('Custom pages')),
+        S.divider(),
         singleton(S, 'pageSettings', 'pageSettings-project', 'Project page'),
         singleton(S, 'pageSettings', 'pageSettings-data', 'Data page'),
         singleton(S, 'pageSettings', 'pageSettings-journal', 'Journal page'),

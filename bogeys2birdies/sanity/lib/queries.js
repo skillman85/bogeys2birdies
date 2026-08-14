@@ -14,3 +14,4 @@ export const EXPERIMENTS_QUERY = defineQuery(`*[_type == "experiment"] | order(p
 export const GEAR_REVIEWS_QUERY = defineQuery(`*[_type == "gearReview"] | order(publishedAt desc){..., "slug": slug.current, coverImage ${imageFields}}`);
 export const SITE_SETTINGS_QUERY = defineQuery(`*[_type == "siteSettings"][0]`);
 export const PAGE_SETTINGS_QUERY = defineQuery(`*[_type == "pageSettings" && pageKey == $pageKey][0]`);
+export const CUSTOM_PAGE_QUERY = defineQuery(`*[_type == "customPage" && slug.current == $slug][0]{..., "slug": slug.current}`);

@@ -1,4 +1,5 @@
 import './globals.css';
+import './custom-pages.css';
 import { defaultSiteSettings } from '../content/defaults';
 import { getSiteSettings } from '../sanity/lib/content';
 
