@@ -37,7 +37,7 @@ export default async function Home() {
       <section className="experiments dark-section">
         <div className="section-shell"><div className="section-heading split light"><div><Eyebrow>{settings.experimentsEyebrow}</Eyebrow><h2>{settings.experimentsHeading.split('\n').map((line, index) => <span key={line}>{index > 0 && <br/>}{line}</span>)}</h2></div><p>{settings.experimentsDescription}</p></div>
         <div className="story-grid">
-          {experiments.map((item) => <ExperimentCard key={item._id || item.slug} {...item} title={item.homeTitle || item.title} summary={item.homeSummary || item.summary} image={imageUrl(item.coverImage)}/>)}
+          {experiments.map((item) => <ExperimentCard key={item._id || item.slug} {...item} title={item.homeTitle || item.title} summary={item.homeSummary || item.summary} image={imageUrl(item.coverImage)} href={`/experiments/${item.slug}`}/>)}
         </div>
         <Link className="big-link inverse" href="/experiments">View all experiments <Chevron /></Link></div>
       </section>
@@ -45,7 +45,7 @@ export default async function Home() {
       <section className="manifesto section-shell"><div className="manifesto-mark">“</div><blockquote>{settings.manifestoHeading}<br/><em>{settings.manifestoEmphasis}</em></blockquote><p>{settings.manifestoDescription}</p></section>
 
       <section className="latest section-shell"><div className="section-heading split"><div><Eyebrow>{settings.journalEyebrow}</Eyebrow><h2>{settings.journalHeading}</h2></div><Link href="/journal" className="text-link">View the journal <Chevron /></Link></div>
-        <div className="article-grid">{articles.map((item) => <ArticleCard key={item._id || item.slug} category={item.homeCategory || item.category} title={item.homeTitle || item.title} meta={item.homeMeta || formatArticleMeta(item)} image={imageUrl(item.homeImage || item.coverImage)}/>)}</div>
+        <div className="article-grid">{articles.map((item) => <ArticleCard key={item._id || item.slug} category={item.homeCategory || item.category} title={item.homeTitle || item.title} meta={item.homeMeta || formatArticleMeta(item)} image={imageUrl(item.homeImage || item.coverImage)} href={`/journal/${item.slug}`}/>)}</div>
       </section>
 
       <Newsletter settings={settings}/>

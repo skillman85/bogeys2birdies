@@ -18,8 +18,16 @@
 .custom-page-body p { margin: 0 0 24px; }
 .custom-page-body a { color: var(--green2); text-decoration: underline; }
 .custom-page-image { display: block; width: 100%; height: auto; margin: 42px 0; }
+.card-image-link { display: block; }
+.content-detail-meta { margin-top: 28px; font: 500 11px var(--mono); letter-spacing: .08em; text-transform: uppercase; }
+.content-detail-cover { display: block; width: 100%; max-height: 720px; object-fit: cover; }
+.content-detail-facts { display: grid; grid-template-columns: 1fr 1fr; gap: 60px; max-width: 1000px; margin: 60px auto 0; padding: 36px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+.content-detail-facts strong,.content-detail-verdict strong { font: 500 11px var(--mono); letter-spacing: .1em; text-transform: uppercase; }
+.content-detail-facts p,.content-detail-verdict p { color: var(--muted); font-size: 18px; }
+.content-detail-verdict { max-width: 820px; margin: 60px auto 0; padding: 32px; background: var(--cream); }
 
 @media (max-width: 900px) {
   .custom-page-body { margin-top: 50px; font-size: 16px; }
   .custom-page-body h2 { font-size: 38px; }
+  .content-detail-facts { grid-template-columns: 1fr; gap: 20px; }
 }

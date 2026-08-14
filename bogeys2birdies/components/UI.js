@@ -10,19 +10,19 @@ export function Stat({ value, label, detail }) {
 
 export function ExperimentCard({ number, tag, title, summary, result, image, href='#' }) {
   return <article className="story-card">
-    <div className="story-image" style={{backgroundImage:`linear-gradient(180deg, rgba(11,19,14,.02), rgba(11,19,14,.5)), url(${image})`}}>
+    <Link href={href} aria-label={`Read ${title}`} className="card-image-link"><div className="story-image" style={{backgroundImage:`linear-gradient(180deg, rgba(11,19,14,.02), rgba(11,19,14,.5)), url(${image})`}}>
       <span className="number-pill">{number}</span><span className="result-pill">{result}</span>
-    </div>
+    </div></Link>
     <div className="story-copy"><Eyebrow>{tag}</Eyebrow><h3>{title}</h3><p>{summary}</p><Link href={href} className="text-link">Read experiment <Chevron /></Link></div>
   </article>
 }
 
-export function ArticleCard({ category, title, meta, image, href }) {
-  const content = <>
-    <div className="article-image" style={{backgroundImage:`url(${image})`}} />
+export function ArticleCard({ category, title, meta, image, href, linkLabel = 'Read article' }) {
+  return <article className="article-card">
+    {href ? <Link href={href} aria-label={`${linkLabel}: ${title}`} className="card-image-link"><div className="article-image" style={{backgroundImage:`url(${image})`}} /></Link> : <div className="article-image" style={{backgroundImage:`url(${image})`}} />}
     <Eyebrow>{category}</Eyebrow><h3>{title}</h3><p>{meta}</p>
-  </>;
-  return <article className="article-card">{href ? <Link href={href}>{content}</Link> : content}</article>
+    {href && <Link href={href} className="text-link">{linkLabel} <Chevron /></Link>}
+  </article>
 }
 
 export function Newsletter({ settings = {} }) {
