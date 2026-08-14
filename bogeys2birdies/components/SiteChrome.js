@@ -29,7 +29,6 @@ export function Header({ settings = {} }) {
           <Link href="/data">Data</Link>
           <a className="instagram-nav-link" href={instagramUrl} target="_blank" rel="noreferrer noopener" aria-label="Follow me on Instagram">
             <InstagramIcon />
-            <span>Follow me on Instagram</span>
           </a>
         </nav>
         <button className="menu-btn" aria-label="Toggle menu" onClick={() => setOpen(!open)}>{open ? 'Close' : 'Menu'}</button>
