@@ -1,15 +1,10 @@
-import { PortableText } from 'next-sanity';
 import { notFound } from 'next/navigation';
 import { Page } from '../../components/SiteChrome';
 import { Eyebrow, Stat } from '../../components/UI';
 import { defaultSiteSettings } from '../../content/defaults';
 import { getCustomPage, getSiteSettings } from '../../sanity/lib/content';
-import { imageUrl } from '../../sanity/lib/image';
 import { metadataFrom } from '../../sanity/lib/metadata';
-
-const portableTextComponents = {
-  types: { image: ({ value }) => <img className="custom-page-image" src={imageUrl(value)} alt={value.alt || ''} /> },
-};
+import { RichText } from '../../components/RichText';
 
 export async function generateMetadata({ params }) {
   const { slug } = await params;
@@ -25,7 +20,7 @@ export default async function CustomPage({ params }) {
     <section className="page-hero">{page.eyebrow && <Eyebrow>{page.eyebrow}</Eyebrow>}<h1>{page.title}</h1><p>{page.description}</p></section>
     <section className="section-shell content-block custom-page-content">
       {!!page.stats?.length && <div className="stats-grid">{page.stats.map((stat) => <Stat key={stat._key || stat.label} {...stat} />)}</div>}
-      {!!page.body?.length && <div className="custom-page-body"><PortableText value={page.body} components={portableTextComponents} /></div>}
+      <RichText value={page.body} />
     </section>
   </main></Page>;
 }
