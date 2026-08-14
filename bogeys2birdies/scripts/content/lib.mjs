@@ -58,8 +58,12 @@ async function applyCategory(type, input, output) {
   const title = String(input.category).trim();
   const categorySlug = slugify(title);
   if (!categorySlug) throw new Error('Category must contain letters or numbers.');
-  const categoryId = `category-${categorySlug}`;
-  await client.createIfNotExists({ _id: categoryId, _type: 'category', title, slug: { _type: 'slug', current: categorySlug } });
+  const existing = await client.fetch(
+    '*[_type == "category" && (slug.current == $slug || title == $title)][0]{_id}',
+    { slug: categorySlug, title },
+  );
+  const categoryId = existing?._id || `category-${categorySlug}`;
+  if (!existing) await client.createIfNotExists({ _id: categoryId, _type: 'category', title, slug: { _type: 'slug', current: categorySlug } });
   return { ...output, category: title, categoryRef: { _type: 'reference', _ref: categoryId } };
 }
 

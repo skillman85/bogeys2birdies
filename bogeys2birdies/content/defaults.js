@@ -52,6 +52,10 @@ export const defaultHomepageSettings = {
 
 export const defaultHomeContent = { settings: defaultHomepageSettings, site: defaultSiteSettings, experiments: defaultExperiments, articles: defaultHomepageArticles };
 
+export function slugifyCategory(value) {
+  return String(value || '').toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
 export const defaultPageSettings = {
   project: { pageKey: 'project', eyebrow: 'THE PROJECT', title: 'Can an ordinary club golfer reach a 5 handicap?', description: 'That is the experiment. Every lesson, practice block, round and equipment change gets measured against the same goal.', stats: [{ value: '8.8', label: 'Starting index' }, { value: '5.0', label: 'Target' }, { value: '24', label: 'Rounds tracked' }, { value: '79.8', label: 'Scoring average' }], secondaryHeading: 'No shortcuts. Just better decisions.', paragraphs: ['The Road to 5 is the spine of Bogeys2Birdies. It is not a promise to become scratch or a feed of perfect range swings. It is a transparent record of what improves an actual club golfer.', 'Each month gets a review: what changed, what failed, which numbers moved and what gets tested next.'] },
   data: { pageKey: 'data', eyebrow: 'THE NUMBERS', title: 'The scorecard tells you what happened. The data tells you why.', description: 'The live dashboard behind the Road to 5.', stats: [{ value: '79.8', label: 'Scoring average', detail: 'Season -1.4' }, { value: '48%', label: 'GIR', detail: 'Season +6 pts' }, { value: '55%', label: 'Fairways', detail: 'Season +3 pts' }, { value: '31.2', label: 'Putts', detail: 'Season -1.1' }], chartEyebrow: 'HANDICAP TREND', chartHeading: 'Heading the right way.', chartValue: '8.8' },

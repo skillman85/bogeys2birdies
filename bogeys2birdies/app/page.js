@@ -53,7 +53,7 @@ export default async function Home() {
       <section className="manifesto section-shell"><div className="manifesto-mark">“</div><blockquote>{settings.manifestoHeading}<br/><em>{settings.manifestoEmphasis}</em></blockquote><p>{settings.manifestoDescription}</p></section>
 
       <section className="latest section-shell"><div className="section-heading split"><div><Eyebrow>{settings.journalEyebrow}</Eyebrow><h2>{settings.journalHeading}</h2></div><Link href="/journal" className="text-link">View the journal <Chevron /></Link></div>
-        <div className="article-grid">{articles.map((item) => <ArticleCard key={item._id || item.slug} category={item.homeCategory || item.category} title={item.homeTitle || item.title} meta={item.homeMeta || formatArticleMeta(item)} image={imageUrl(item.homeImage || item.coverImage)} href={`/journal/${item.slug}`}/>)}</div>
+        <div className="article-grid">{articles.map((item) => <ArticleCard key={item._id || item.slug} category={item.homeCategory || item.category} categorySlug={item.categorySlug} title={item.homeTitle || item.title} meta={item.homeMeta || formatArticleMeta(item)} image={imageUrl(item.homeImage || item.coverImage)} href={`/journal/${item.slug}`}/>)}</div>
       </section>
 
       <Newsletter settings={settings}/>

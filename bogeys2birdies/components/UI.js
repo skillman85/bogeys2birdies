@@ -1,8 +1,16 @@
 import Link from 'next/link';
+import { slugifyCategory } from '../content/defaults';
 
 export const Chevron = () => <span aria-hidden="true">↗</span>;
 
 export function Eyebrow({ children }) { return <div className="eyebrow">{children}</div>; }
+
+export function CategoryEyebrow({ category, categorySlug, href }) {
+  const slug = categorySlug || slugifyCategory(category);
+  if (!category || !slug) return null;
+  if (href === false) return <Eyebrow>{category}</Eyebrow>;
+  return <Link href={href || `/journal/category/${slug}`} className="eyebrow category-link">{category}</Link>;
+}
 
 export function Stat({ value, label, detail }) {
   return <div className="stat"><div className="stat-value">{value}</div><div className="stat-label">{label}</div>{detail && <div className="stat-detail">{detail}</div>}</div>;
@@ -17,10 +25,10 @@ export function ExperimentCard({ number, tag, title, summary, result, image, hre
   </article>
 }
 
-export function ArticleCard({ category, title, meta, image, href, linkLabel = 'Read article' }) {
+export function ArticleCard({ category, categorySlug, categoryHref, title, meta, image, href, linkLabel = 'Read article' }) {
   return <article className="article-card">
     {href ? <Link href={href} aria-label={`${linkLabel}: ${title}`} className="card-image-link"><div className="article-image" style={{backgroundImage:`url(${image})`}} /></Link> : <div className="article-image" style={{backgroundImage:`url(${image})`}} />}
-    <Eyebrow>{category}</Eyebrow><h3>{title}</h3><p>{meta}</p>
+    <CategoryEyebrow category={category} categorySlug={categorySlug} href={categoryHref} /><h3>{title}</h3><p>{meta}</p>
     {href && <Link href={href} className="text-link">{linkLabel} <Chevron /></Link>}
   </article>
 }
