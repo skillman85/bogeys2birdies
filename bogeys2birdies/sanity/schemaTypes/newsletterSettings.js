@@ -20,7 +20,7 @@ export const newsletterSettings = defineType({
       rows: 2,
       initialValue: 'I agree to receive the Bogeys2Birdies newsletter and understand I can unsubscribe at any time.',
     }),
-    defineField({ name: 'successMessage', type: 'string', initialValue: 'You are on the list. Check your inbox for the next dispatch.' }),
+    defineField({ name: 'successMessage', type: 'string', initialValue: 'You are on the list. I will email you when the next dispatch goes out.' }),
     defineField({ name: 'fromName', title: 'Sender name', type: 'string', initialValue: 'Bogeys2Birdies' }),
     defineField({ name: 'fromEmail', title: 'Sender email', type: 'string', description: 'Must match a verified sender/domain in your email provider.' }),
     defineField({ name: 'replyToEmail', title: 'Reply-to email', type: 'string' }),

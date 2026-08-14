@@ -25,7 +25,7 @@ export function NewsletterSignup({ settings = {} }) {
       setEmail('');
       setConsent(false);
       setStatus('success');
-      setMessage(settings.successMessage || 'You are on the list. Check your inbox for the next dispatch.');
+      setMessage(data.welcomeEmailSent ? 'You are on the list. I have sent a confirmation email.' : (settings.successMessage || 'You are on the list. I will email you when the next dispatch goes out.'));
     } catch (error) {
       setStatus('error');
       setMessage(error.message || 'Something went wrong. Please try again.');
