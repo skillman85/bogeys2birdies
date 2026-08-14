@@ -1,0 +1,15 @@
+import { readFile } from 'node:fs/promises';
+import { client } from './lib.mjs';
+const path = process.argv[2];
+if (!path) throw new Error('Usage: npm run content:import-season -- <PrecisionGolf export.json>');
+const data = JSON.parse(await readFile(path, 'utf8'));
+const keyed = (items, prefix) => (items || []).map((item, index) => ({ _key: `${prefix}-${index + 1}`, _type: 'object', ...item }));
+const history = [...(data.handicapHistory || [])].sort((a,b) => new Date(a.date)-new Date(b.date));
+const currentHandicap = Number(data.player?.currentHandicapIndex ?? history.at(-1)?.handicap);
+const startEntry = history.find((item) => Number(item.handicap) === 8.8) || history[0];
+await client.createOrReplace({ _id:'seasonData', _type:'seasonData', year:data.season?.year, exportedAt:data.exportedAt, playerName:data.player?.name, homeClub:data.player?.homeClub, roundCount:data.season?.includedRoundCount, firstRoundDate:data.season?.firstRoundDate, latestRoundDate:data.season?.latestRoundDate, summary:data.summary, handicapHistory:keyed(history.map(({date,handicap})=>({date,handicap})),'handicap'), monthlyCheckpoints:keyed(data.trends?.monthlyCheckpoints,'month'), parScoring:keyed(data.parScoring,'par'), recentRounds:keyed((data.trends?.recentRoundScores||[]).slice(0,10),'round') });
+const stats=[{_key:'scoring-average',_type:'stat',value:data.summary.averageGross.toFixed(1),label:'Scoring average',detail:`Last 10: ${data.trends.last10AverageGross.toFixed(1)}`},{_key:'gir',_type:'stat',value:`${data.summary.girPercent}%`,label:'GIR',detail:`${data.season.includedRoundCount} rounds`},{_key:'fairways',_type:'stat',value:`${data.summary.fairwaysHitPercent}%`,label:'Fairways',detail:`Penalties ${data.summary.penaltiesPerRound.toFixed(1)}/round`},{_key:'putts',_type:'stat',value:data.summary.averagePutts.toFixed(1),label:'Putts',detail:`Scrambling ${data.summary.scramblingPercent}%`}];
+const milestones=history.map((item,index)=>({_key:`handicap-${index+1}`,_type:'handicapMilestone',label:new Intl.DateTimeFormat('en-GB',{day:'numeric',month:'short'}).format(new Date(item.date)),handicap:item.handicap}));
+await client.patch('homepageSettings').set({startingHandicap:String(startEntry?.handicap??8.8),currentHandicap:currentHandicap.toFixed(1),stats}).commit();
+await client.patch('pageSettings-data').set({stats,handicapMilestones:milestones}).commit();
+console.log(JSON.stringify({status:'season-imported',rounds:data.season.includedRoundCount,handicapEntries:history.length,currentHandicap},null,2));

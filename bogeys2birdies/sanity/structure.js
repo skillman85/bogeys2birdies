@@ -30,5 +30,6 @@ export const structure = (S) =>
       ])),
       S.divider(),
       singleton(S, 'homepageSettings', 'homepageSettings', 'Homepage settings'),
+      singleton(S, 'seasonData', 'seasonData', 'Season data'),
       singleton(S, 'siteSettings', 'siteSettings', 'Site settings'),
     ]);

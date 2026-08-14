@@ -21,7 +21,8 @@
     "content:publish": "node --env-file=.env.local scripts/content/manage.mjs publish",
     "content:unpublish": "node --env-file=.env.local scripts/content/manage.mjs unpublish",
     "content:delete": "node --env-file=.env.local scripts/content/manage.mjs delete"
-    ,"content:seo-publish": "node --env-file=.env.local scripts/content/seo-publish.mjs"
+    ,"content:seo-publish": "node --env-file=.env.local scripts/content/seo-publish.mjs",
+    "content:import-season": "node --env-file=.env.local scripts/content/import-season.mjs"
   },
   "dependencies": {
     "@sanity/image-url": "^2.1.1",

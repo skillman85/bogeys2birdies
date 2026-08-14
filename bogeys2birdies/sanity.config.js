@@ -7,7 +7,7 @@ import { structure } from './sanity/structure';
 import { createSeoSuggestionAction } from './sanity/actions/suggestSeo';
 import { BrandIcon } from './sanity/components/BrandIcon.jsx';
 
-const singletonTypes = new Set(['homepageSettings', 'siteSettings', 'pageSettings']);
+const singletonTypes = new Set(['homepageSettings', 'siteSettings', 'pageSettings', 'seasonData']);
 const editorialTypes = new Set(['article', 'experiment', 'gearReview']);
 
 export default defineConfig({
