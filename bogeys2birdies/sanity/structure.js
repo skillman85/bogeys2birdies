@@ -1,0 +1,30 @@
+const contentList = (S, type, title) =>
+  S.documentTypeList(type)
+    .title(title)
+    .defaultOrdering([{ field: 'publishedAt', direction: 'desc' }]);
+
+const singleton = (S, type, id, title) =>
+  S.listItem()
+    .title(title)
+    .id(id)
+    .child(S.document().schemaType(type).documentId(id).title(title));
+
+export const structure = (S) =>
+  S.list()
+    .title('Bogeys2Birdies')
+    .items([
+      S.listItem().id('article').title('Articles').schemaType('article').child(contentList(S, 'article', 'Articles')),
+      S.listItem().id('experiment').title('Experiments').schemaType('experiment').child(contentList(S, 'experiment', 'Experiments')),
+      S.listItem().id('gearReview').title('Gear reviews').schemaType('gearReview').child(contentList(S, 'gearReview', 'Gear reviews')),
+      S.divider(),
+      S.listItem().title('Pages').child(S.list().title('Pages').items([
+        singleton(S, 'pageSettings', 'pageSettings-project', 'Project page'),
+        singleton(S, 'pageSettings', 'pageSettings-data', 'Data page'),
+        singleton(S, 'pageSettings', 'pageSettings-journal', 'Journal page'),
+        singleton(S, 'pageSettings', 'pageSettings-experiments', 'Experiments page'),
+        singleton(S, 'pageSettings', 'pageSettings-gear', 'Gear page'),
+      ])),
+      S.divider(),
+      singleton(S, 'homepageSettings', 'homepageSettings', 'Homepage settings'),
+      singleton(S, 'siteSettings', 'siteSettings', 'Site settings'),
+    ]);

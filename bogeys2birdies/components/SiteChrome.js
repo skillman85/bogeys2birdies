@@ -23,21 +23,21 @@ export function Header() {
   );
 }
 
-export function Footer() {
+export function Footer({ settings = {} }) {
   return (
     <footer className="footer">
       <div>
         <div className="brand footer-brand"><span>BOGEYS</span><strong>2</strong><span>BIRDIES</span></div>
-        <p>Real golf. Real progress.</p>
+        <p>{settings.footerTagline || 'Real golf. Real progress.'}</p>
       </div>
       <div className="footer-links">
         <Link href="/project">The Project</Link><Link href="/experiments">Experiments</Link><Link href="/data">The Numbers</Link>
       </div>
-      <p className="copyright">© 2026 Bogeys2Birdies</p>
+      <p className="copyright">{settings.copyright || '© 2026 Bogeys2Birdies'}</p>
     </footer>
   );
 }
 
-export function Page({ children }) {
-  return <><Header />{children}<Footer /></>;
+export function Page({ children, siteSettings }) {
+  return <><Header />{children}<Footer settings={siteSettings} /></>;
 }

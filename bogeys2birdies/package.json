@@ -2,15 +2,38 @@
   "name": "bogeys2birdies",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=22.12"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "studio": "sanity dev",
+    "content:create-article": "node --env-file=.env.local scripts/content/manage.mjs create-article",
+    "content:update-article": "node --env-file=.env.local scripts/content/manage.mjs update-article",
+    "content:create-experiment": "node --env-file=.env.local scripts/content/manage.mjs create-experiment",
+    "content:update-experiment": "node --env-file=.env.local scripts/content/manage.mjs update-experiment",
+    "content:create-gear-review": "node --env-file=.env.local scripts/content/manage.mjs create-gear-review",
+    "content:update-gear-review": "node --env-file=.env.local scripts/content/manage.mjs update-gear-review",
+    "content:update-settings": "node --env-file=.env.local scripts/content/manage.mjs update-settings",
+    "content:update-page": "node --env-file=.env.local scripts/content/manage.mjs update-page",
+    "content:publish": "node --env-file=.env.local scripts/content/manage.mjs publish",
+    "content:unpublish": "node --env-file=.env.local scripts/content/manage.mjs unpublish",
+    "content:delete": "node --env-file=.env.local scripts/content/manage.mjs delete"
+    ,"content:seo-publish": "node --env-file=.env.local scripts/content/seo-publish.mjs"
   },
   "dependencies": {
+    "@sanity/image-url": "^2.1.1",
+    "@sanity/vision": "^6.9.2",
     "next": "^16.1.0",
-    "react": "^19.2.0",
-    "react-dom": "^19.2.0"
+    "next-sanity": "^13.3.3",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "sanity": "^6.9.2",
+    "styled-components": "6.1"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "@rolldown/binding-win32-x64-msvc": "^1.2.4"
+  }
 }

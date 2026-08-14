@@ -17,17 +17,18 @@ export function ExperimentCard({ number, tag, title, summary, result, image, hre
   </article>
 }
 
-export function ArticleCard({ category, title, meta, image }) {
-  return <article className="article-card">
+export function ArticleCard({ category, title, meta, image, href }) {
+  const content = <>
     <div className="article-image" style={{backgroundImage:`url(${image})`}} />
     <Eyebrow>{category}</Eyebrow><h3>{title}</h3><p>{meta}</p>
-  </article>
+  </>;
+  return <article className="article-card">{href ? <Link href={href}>{content}</Link> : content}</article>
 }
 
-export function Newsletter() {
+export function Newsletter({ settings = {} }) {
   return <section className="newsletter">
-    <div><Eyebrow>B2B Dispatch</Eyebrow><h2>One useful golf lesson.<br/>Every Friday.</h2></div>
-    <div><p>No tour gossip. No miracle swing tips. Just what we tested, what changed and what might help your game.</p>
-    <form onSubmit={(e)=>e.preventDefault()}><input type="email" placeholder="Your email address" aria-label="Email address"/><button>Join the project</button></form><small>Free. Unsubscribe whenever you like.</small></div>
+    <div><Eyebrow>B2B Dispatch</Eyebrow><h2>{settings.newsletterHeadingLineOne || 'One useful golf lesson.'}<br/>{settings.newsletterHeadingLineTwo || 'Every Friday.'}</h2></div>
+    <div><p>{settings.newsletterDescription || 'No tour gossip. No miracle swing tips. Just what we tested, what changed and what might help your game.'}</p>
+    <form><input type="email" placeholder="Your email address" aria-label="Email address"/><button type="button">Join the project</button></form><small>Free. Unsubscribe whenever you like.</small></div>
   </section>
 }

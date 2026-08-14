@@ -1,9 +1,14 @@
 import './globals.css';
+import { defaultSiteSettings } from '../content/defaults';
+import { getSiteSettings } from '../sanity/lib/content';
 
-export const metadata = {
-  title: 'Bogeys2Birdies | Real Golf. Real Progress.',
-  description: 'An honest club golfer’s pursuit of better golf — experiments, data, gear and the road to a lower handicap.'
-};
+export async function generateMetadata() {
+  const settings = await getSiteSettings(defaultSiteSettings);
+  return {
+    title: settings.defaultSeo?.metaTitle || settings.siteTitle,
+    description: settings.defaultSeo?.metaDescription || settings.siteDescription,
+  };
+}
 
 export default function RootLayout({ children }) {
   return (
