@@ -5,7 +5,6 @@ import { dataset, projectId } from './sanity/env';
 import { schemaTypes } from './sanity/schemaTypes';
 import { structure } from './sanity/structure';
 import { createSeoSuggestionAction } from './sanity/actions/suggestSeo';
-import { createNewsletterSendAction, createNewsletterTestSendAction } from './sanity/actions/newsletterSend';
 import { BrandIcon } from './sanity/components/BrandIcon.jsx';
 import { SeasonImportTool } from './sanity/components/SeasonImportTool.jsx';
 
@@ -27,8 +26,6 @@ export default defineConfig({
         : actions;
       return editorialTypes.has(context.schemaType)
         ? [...availableActions, createSeoSuggestionAction(context)]
-        : context.schemaType === 'newsletterCampaign'
-          ? [...availableActions, createNewsletterTestSendAction(context), createNewsletterSendAction(context)]
         : availableActions;
     },
   },

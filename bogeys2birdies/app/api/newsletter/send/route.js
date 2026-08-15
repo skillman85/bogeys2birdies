@@ -75,10 +75,10 @@ function portableTextToHtml(blocks = []) {
     if (block._type !== 'block') return '';
     const text = escapeHtml(blockText(block));
     if (!text) return '';
-    if (block.style === 'h2') return `<h2>${text}</h2>`;
-    if (block.style === 'h3') return `<h3>${text}</h3>`;
-    if (block.style === 'blockquote') return `<blockquote>${text}</blockquote>`;
-    return `<p>${text}</p>`;
+    if (block.style === 'h2') return `<h2 style="margin:28px 0 10px;font-size:25px;line-height:1.15;color:#111713;">${text}</h2>`;
+    if (block.style === 'h3') return `<h3 style="margin:24px 0 8px;font-size:20px;line-height:1.2;color:#111713;">${text}</h3>`;
+    if (block.style === 'blockquote') return `<blockquote style="margin:24px 0;padding:0 0 0 18px;border-left:4px solid #d6e35a;color:#314037;font-size:18px;">${text}</blockquote>`;
+    return `<p style="margin:0 0 18px;font-size:16px;color:#243029;">${text}</p>`;
   }).filter(Boolean).join('\n');
 }
 
@@ -86,7 +86,7 @@ function portableTextToText(blocks = []) {
   return blocks.map((block) => (block._type === 'block' ? blockText(block) : '')).filter(Boolean).join('\n\n');
 }
 
-function emailShell({ preheader, html, unsubscribeLink }) {
+function emailShell({ heading, subheading, preheader, html, unsubscribeLink }) {
   const baseUrl = siteUrl();
   const logoUrl = `${baseUrl}/bogeys2birdies-logo.png`;
   const privacyUrl = `${baseUrl}/privacy-policy`;
@@ -105,6 +105,8 @@ function emailShell({ preheader, html, unsubscribeLink }) {
     '</tr></table>',
     '</td></tr>',
     '<tr><td style="padding:30px 28px;color:#111713;">',
+    heading ? `<h1 style="margin:0 0 14px;font-size:38px;line-height:1.02;letter-spacing:-1.4px;color:#111713;">${escapeHtml(heading)}</h1>` : '',
+    subheading ? `<p style="margin:0 0 28px;font-size:18px;line-height:1.5;color:#5f6d65;">${escapeHtml(subheading)}</p>` : '',
     html,
     '</td></tr>',
     '<tr><td style="padding:26px 28px 30px;border-top:1px solid #e3ddcf;background:#fbfaf6;">',
@@ -120,7 +122,7 @@ function emailShell({ preheader, html, unsubscribeLink }) {
   ].join('');
 }
 
-async function sendEmail({ from, replyTo, to, subject, preheader, html, text }) {
+async function sendEmail({ from, replyTo, to, subject, heading, subheading, preheader, html, text }) {
   const unsubscribeLink = unsubscribeUrl(to);
   const privacyLink = `${siteUrl()}/privacy-policy`;
   const response = await fetch('https://api.resend.com/emails', {
@@ -135,8 +137,8 @@ async function sendEmail({ from, replyTo, to, subject, preheader, html, text }) 
         'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
       },
       subject,
-      html: emailShell({ preheader, html, unsubscribeLink }),
-      text: [preheader, text, 'You are receiving this because you subscribed to Bogeys2Birdies. Reply to this email to manage your subscription.', `Unsubscribe: ${unsubscribeLink}`, `Privacy policy: ${privacyLink}`, 'Contact: hello@bogeys2birdies.co.uk', 'Bogeys2Birdies, United Kingdom.'].filter(Boolean).join('\n\n'),
+      html: emailShell({ heading, subheading, preheader, html, unsubscribeLink }),
+      text: [preheader, heading, subheading, text, 'You are receiving this because you subscribed to Bogeys2Birdies. Reply to this email to manage your subscription.', `Unsubscribe: ${unsubscribeLink}`, `Privacy policy: ${privacyLink}`, 'Contact: hello@bogeys2birdies.co.uk', 'Bogeys2Birdies, United Kingdom.'].filter(Boolean).join('\n\n'),
     }),
   });
   if (!response.ok) {
@@ -166,9 +168,10 @@ export async function POST(request) {
   if (testOnly && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(testRecipient)) return json({ error: 'A valid testRecipient is required for test sends.' }, 400);
 
   const client = getClient();
-  const campaign = await client.fetch('*[_id == $campaignId && _type == "newsletterCampaign"][0]{_id,title,subject,preheader,body,status}', { campaignId });
+  const campaign = await client.fetch('*[_id == $campaignId && _type == "newsletterCampaign"][0]{_id,title,subject,heading,subheading,preheader,body,status}', { campaignId });
   if (!campaign) return json({ error: 'Campaign not found.' }, 404);
-  if (!testOnly && campaign.status !== 'ready') return json({ error: 'Campaign must be marked Ready to send before sending.' }, 409);
+  if (!campaign.subject || !campaign.heading || !campaign.body?.length) return json({ error: 'Campaign needs an email subject, header and body before sending.' }, 409);
+  if (!testOnly && campaign.status === 'sent') return json({ error: 'This campaign has already been sent.' }, 409);
 
   const settings = await client.fetch('*[_id == "newsletterSettings"][0]{fromName,fromEmail,replyToEmail}');
   const fromEmail = process.env.NEWSLETTER_FROM_EMAIL || settings?.fromEmail;
@@ -192,6 +195,8 @@ export async function POST(request) {
         replyTo: replyToEmail,
         to: recipient.email,
         subject: campaign.subject,
+        heading: campaign.heading || campaign.title,
+        subheading: campaign.subheading,
         preheader: campaign.preheader,
         html,
         text,
