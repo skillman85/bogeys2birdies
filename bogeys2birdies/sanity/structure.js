@@ -22,7 +22,7 @@ export const structure = (S) =>
       S.listItem().id('comment').title('Comments').schemaType('comment').child(S.documentTypeList('comment').title('Comments').defaultOrdering([{ field: 'createdAt', direction: 'desc' }])),
       S.listItem().id('newsletter').title('Newsletter').child(S.list().title('Newsletter').items([
         singleton(S, 'newsletterSettings', 'newsletterSettings', 'Newsletter settings'),
-        S.listItem().id('newsletterCampaign').title('Campaigns').schemaType('newsletterCampaign').child(S.documentTypeList('newsletterCampaign').title('Newsletter campaigns').defaultOrdering([{ field: 'scheduledAt', direction: 'desc' }])),
+        S.listItem().id('newsletterCampaign').title('Campaigns').schemaType('newsletterCampaign').child(S.documentTypeList('newsletterCampaign').title('Newsletter campaigns').defaultOrdering([{ field: 'sentAt', direction: 'desc' }])),
         S.listItem().id('newsletterSubscriber').title('Subscribers').schemaType('newsletterSubscriber').child(S.documentTypeList('newsletterSubscriber').title('Newsletter subscribers').defaultOrdering([{ field: 'createdAt', direction: 'desc' }])),
       ])),
       S.divider(),
