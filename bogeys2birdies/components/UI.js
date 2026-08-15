@@ -1,16 +1,25 @@
 import Link from 'next/link';
 import { slugifyCategory } from '../content/defaults';
 import { NewsletterSignup } from './NewsletterSignup';
+import { cmsResponsiveStyle } from './cmsTextStyle';
 
 export const Chevron = () => <span aria-hidden="true">↗</span>;
 
-export function Eyebrow({ children }) { return <div className="eyebrow">{children}</div>; }
+export function Eyebrow({ children, style }) { return <div className="eyebrow cms-text" style={style}>{children}</div>; }
 
 export function CategoryEyebrow({ category, categorySlug, href }) {
   const slug = categorySlug || slugifyCategory(category);
   if (!category || !slug) return null;
   if (href === false) return <Eyebrow>{category}</Eyebrow>;
   return <Link href={href || `/journal/category/${slug}`} className="eyebrow category-link">{category}</Link>;
+}
+
+export function PageHero({ page = {} }) {
+  return <section className="page-hero">
+    <Eyebrow style={cmsResponsiveStyle(page.eyebrowStyle)}>{page.eyebrow}</Eyebrow>
+    <h1 className="cms-text" style={cmsResponsiveStyle(page.titleStyle)}>{page.title}</h1>
+    <p className="cms-text" style={cmsResponsiveStyle(page.descriptionStyle)}>{page.description}</p>
+  </section>;
 }
 
 export function Stat({ value, label, detail }) {
@@ -36,8 +45,8 @@ export function ArticleCard({ category, categorySlug, categoryHref, title, meta,
 
 export function Newsletter({ settings = {} }) {
   return <section className="newsletter">
-    <div><Eyebrow>B2B Dispatch</Eyebrow><h2>{settings.newsletterHeadingLineOne || 'One useful golf lesson.'}<br/>{settings.newsletterHeadingLineTwo || 'Every Friday.'}</h2></div>
-    <div className="newsletter-panel"><p>{settings.newsletterDescription || 'No tour gossip. No miracle swing tips. Just what we tested, what changed and what might help your game.'}</p>
+    <div><Eyebrow style={cmsResponsiveStyle(settings.newsletterEyebrowStyle || settings.eyebrowStyle)}>B2B Dispatch</Eyebrow><h2 className="cms-text" style={cmsResponsiveStyle(settings.newsletterHeadingStyle || settings.headingStyle)}>{settings.newsletterHeadingLineOne || 'One useful golf lesson.'}<br/>{settings.newsletterHeadingLineTwo || 'Every Friday.'}</h2></div>
+    <div className="newsletter-panel"><p className="cms-text" style={cmsResponsiveStyle(settings.newsletterDescriptionStyle || settings.descriptionStyle)}>{settings.newsletterDescription || 'No tour gossip. No miracle swing tips. Just what we tested, what changed and what might help your game.'}</p>
     <NewsletterSignup settings={settings} /></div>
   </section>
 }

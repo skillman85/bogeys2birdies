@@ -40,6 +40,36 @@ export const stat = defineType({
   ], preview: { select: { title: 'value', subtitle: 'label' } },
 });
 
+export const textStyle = defineType({
+  name: 'textStyle', title: 'Text style', type: 'object', fields: [
+    defineField({ name: 'fontFamily', title: 'Font family', type: 'string', options: { list: [
+      { title: 'Default sans', value: 'var(--sans)' },
+      { title: 'Editorial serif', value: 'var(--serif)' },
+      { title: 'Mono label', value: 'var(--mono)' },
+      { title: 'Arial', value: 'Arial, Helvetica, sans-serif' },
+      { title: 'Georgia', value: 'Georgia, serif' },
+    ] } }),
+    defineField({ name: 'fontSize', title: 'Font size (px)', type: 'number', validation: (rule) => rule.min(8).max(140) }),
+    defineField({ name: 'mobileFontSize', title: 'Mobile font size (px)', type: 'number', validation: (rule) => rule.min(8).max(90) }),
+    defineField({ name: 'fontWeight', title: 'Font weight', type: 'string', options: { list: [
+      { title: 'Regular', value: '400' },
+      { title: 'Medium', value: '500' },
+      { title: 'Semi bold', value: '600' },
+      { title: 'Bold', value: '700' },
+      { title: 'Extra bold', value: '800' },
+    ] } }),
+    defineField({ name: 'lineHeight', title: 'Line height', type: 'number', validation: (rule) => rule.min(0.8).max(2) }),
+    defineField({ name: 'letterSpacing', title: 'Letter spacing (px)', type: 'number', validation: (rule) => rule.min(-2).max(8) }),
+    defineField({ name: 'textTransform', title: 'Text transform', type: 'string', options: { list: [
+      { title: 'Default', value: 'none' },
+      { title: 'Uppercase', value: 'uppercase' },
+      { title: 'Lowercase', value: 'lowercase' },
+      { title: 'Capitalize', value: 'capitalize' },
+    ] } }),
+    defineField({ name: 'color', title: 'Text colour', type: 'string', description: 'Use a hex colour such as #111713, or a site token such as var(--green2).' }),
+  ], preview: { select: { fontFamily: 'fontFamily', fontSize: 'fontSize', color: 'color' }, prepare: ({ fontFamily, fontSize, color }) => ({ title: [fontFamily, fontSize && `${fontSize}px`, color].filter(Boolean).join(' · ') || 'Text style' }) },
+});
+
 export const handicapMilestone = defineType({
   name: 'handicapMilestone', title: 'Handicap milestone', type: 'object', fields: [
     defineField({ name: 'label', title: 'Date or label', type: 'string', validation: (rule) => rule.required() }),

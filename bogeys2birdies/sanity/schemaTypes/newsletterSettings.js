@@ -7,12 +7,17 @@ export const newsletterSettings = defineType({
   fields: [
     defineField({ name: 'headingLineOne', title: 'Heading line one', type: 'string', initialValue: 'One useful golf lesson.' }),
     defineField({ name: 'headingLineTwo', title: 'Heading line two', type: 'string', initialValue: 'Every Friday.' }),
+    defineField({ name: 'eyebrowStyle', title: 'Signup section label style', type: 'textStyle', options: { collapsible: true, collapsed: true } }),
+    defineField({ name: 'headingStyle', title: 'Signup heading style', type: 'textStyle', options: { collapsible: true, collapsed: true } }),
     defineField({
       name: 'description',
       type: 'text',
       rows: 3,
       initialValue: 'No tour gossip. No miracle swing tips. Just what we tested, what changed and what might help your game.',
     }),
+    defineField({ name: 'descriptionStyle', title: 'Signup description style', type: 'textStyle', options: { collapsible: true, collapsed: true } }),
+    defineField({ name: 'consentStyle', title: 'Signup consent text style', type: 'textStyle', options: { collapsible: true, collapsed: true } }),
+    defineField({ name: 'noteStyle', title: 'Signup note/status style', type: 'textStyle', options: { collapsible: true, collapsed: true } }),
     defineField({
       name: 'consentText',
       title: 'Signup consent text',

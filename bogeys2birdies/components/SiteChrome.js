@@ -1,6 +1,7 @@
 'use client';
 import Link from 'next/link';
 import { useState } from 'react';
+import { cmsResponsiveStyle } from './cmsTextStyle';
 
 function InstagramIcon() {
   return (
@@ -15,13 +16,14 @@ function InstagramIcon() {
 export function Header({ settings = {} }) {
   const [open, setOpen] = useState(false);
   const instagramUrl = settings.instagramUrl || 'https://www.instagram.com/bogeys2birdie/';
+  const navStyle = cmsResponsiveStyle(settings.navStyle);
   return (
     <header className="site-header">
       <div className="nav-shell">
-        <Link className="brand" href="/" aria-label="Bogeys2Birdies home">
+        <Link className="brand cms-text" href="/" aria-label="Bogeys2Birdies home" style={cmsResponsiveStyle(settings.brandStyle)}>
           <img className="brand-logo" src="/bogeys2birdies-logo.png" alt="Bogeys2Birdies" />
         </Link>
-        <nav className={open ? 'nav-links open' : 'nav-links'}>
+        <nav className={open ? 'nav-links open' : 'nav-links'} style={navStyle}>
           <Link href="/project">Project</Link>
           <Link href="/experiments">Experiments</Link>
           <Link href="/journal">Journal</Link>
@@ -39,17 +41,18 @@ export function Header({ settings = {} }) {
 
 export function Footer({ settings = {} }) {
   const instagramUrl = settings.instagramUrl || 'https://www.instagram.com/bogeys2birdie/';
+  const footerTextStyle = cmsResponsiveStyle(settings.footerTextStyle);
   return (
     <footer className="footer">
       <div>
-        <div className="brand footer-brand"><img className="brand-logo" src="/bogeys2birdies-logo.png" alt="Bogeys2Birdies" /></div>
-        <p>{settings.footerTagline || 'Real golf. Real progress.'}</p>
-        <a className="instagram-footer-link footer-social-link" href={instagramUrl} target="_blank" rel="noreferrer noopener"><InstagramIcon /> Follow me on Instagram</a>
+        <div className="brand footer-brand cms-text" style={cmsResponsiveStyle(settings.brandStyle)}><img className="brand-logo" src="/bogeys2birdies-logo.png" alt="Bogeys2Birdies" /></div>
+        <p className="cms-text" style={footerTextStyle}>{settings.footerTagline || 'Real golf. Real progress.'}</p>
+        <a className="instagram-footer-link footer-social-link cms-text" href={instagramUrl} target="_blank" rel="noreferrer noopener" style={footerTextStyle}><InstagramIcon /> Follow me on Instagram</a>
       </div>
-      <div className="footer-links">
+      <div className="footer-links cms-text" style={footerTextStyle}>
         <Link href="/project">The Project</Link><Link href="/experiments">Experiments</Link><Link href="/data">The Numbers</Link><Link href="/privacy-policy">Privacy</Link><Link href="/cookie-policy">Cookies</Link><Link href="/terms-and-conditions">Terms</Link><Link href="/disclaimer">Disclaimer</Link>
       </div>
-      <p className="copyright">{settings.copyright || '© 2026 Bogeys2Birdies'}</p>
+      <p className="copyright cms-text" style={footerTextStyle}>{settings.copyright || '© 2026 Bogeys2Birdies'}</p>
     </footer>
   );
 }

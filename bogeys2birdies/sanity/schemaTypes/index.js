@@ -11,12 +11,13 @@ import { customPage } from './customPage';
 import { comment } from './comment';
 import { category } from './category';
 import { seasonData } from './seasonData';
-import { handicapMilestone, portableText, seo, stat } from './shared';
+import { handicapMilestone, portableText, seo, stat, textStyle } from './shared';
 
 export const schemaTypes = [
   seo,
   portableText,
   stat,
+  textStyle,
   handicapMilestone,
   category,
   article,

@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import { cmsResponsiveStyle } from './cmsTextStyle';
 
 export function NewsletterSignup({ settings = {} }) {
   const [email, setEmail] = useState('');
@@ -9,6 +10,8 @@ export function NewsletterSignup({ settings = {} }) {
   const [status, setStatus] = useState('idle');
   const [message, setMessage] = useState('');
   const consentText = settings.consentText || 'I agree to receive the Bogeys2Birdies newsletter and understand I can unsubscribe at any time.';
+  const consentStyle = cmsResponsiveStyle(settings.consentStyle);
+  const noteStyle = cmsResponsiveStyle(settings.noteStyle);
 
   async function onSubmit(event) {
     event.preventDefault();
@@ -41,11 +44,11 @@ export function NewsletterSignup({ settings = {} }) {
       </div>
       <label className="newsletter-consent">
         <input type="checkbox" checked={consent} onChange={(event) => setConsent(event.target.checked)} required />
-        <span>{consentText}</span>
+        <span className="cms-text" style={consentStyle}>{consentText}</span>
       </label>
       <label className="newsletter-honeypot" aria-hidden="true">Website<input tabIndex="-1" autoComplete="off" value={website} onChange={(event) => setWebsite(event.target.value)} /></label>
-      <small className="newsletter-note">Free. Unsubscribe whenever you like.</small>
-      {message && <p className={`newsletter-status ${status}`}>{message}</p>}
+      <small className="newsletter-note cms-text" style={noteStyle}>Free. Unsubscribe whenever you like.</small>
+      {message && <p className={`newsletter-status ${status} cms-text`} style={noteStyle}>{message}</p>}
     </form>
   );
 }
