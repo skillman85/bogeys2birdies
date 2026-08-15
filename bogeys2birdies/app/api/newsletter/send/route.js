@@ -139,7 +139,10 @@ async function sendEmail({ from, replyTo, to, subject, preheader, html, text }) 
       text: [preheader, text, 'You are receiving this because you subscribed to Bogeys2Birdies. Reply to this email to manage your subscription.', `Unsubscribe: ${unsubscribeLink}`, `Privacy policy: ${privacyLink}`, 'Contact: hello@bogeys2birdies.co.uk', 'Bogeys2Birdies, United Kingdom.'].filter(Boolean).join('\n\n'),
     }),
   });
-  if (!response.ok) throw new Error(`Resend failed with status ${response.status}.`);
+  if (!response.ok) {
+    const detail = await response.text().catch(() => '');
+    throw new Error(`Resend failed with status ${response.status}${detail ? `: ${detail}` : ''}`);
+  }
 }
 
 export async function POST(request) {
