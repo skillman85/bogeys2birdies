@@ -6,13 +6,13 @@ export const newsletterCampaign = defineType({
   title: 'Newsletter campaign',
   type: 'document',
   fields: [
-    defineField({ name: 'sendControls', title: 'Send', type: 'string', readOnly: true, components: { input: NewsletterSendPanel } }),
-    defineField({ name: 'title', title: 'Internal campaign name', type: 'string', validation: (rule) => rule.required() }),
+    defineField({ name: 'sendControls', title: 'Send this newsletter', type: 'string', readOnly: true, components: { input: NewsletterSendPanel } }),
+    defineField({ name: 'title', title: 'Internal campaign name', type: 'string', hidden: true }),
     defineField({ name: 'subject', title: 'Email subject line', type: 'string', validation: (rule) => rule.required().max(120) }),
     defineField({ name: 'heading', title: 'Header', type: 'string', validation: (rule) => rule.required().max(120) }),
     defineField({ name: 'subheading', title: 'Sub heading', type: 'text', rows: 2, validation: (rule) => rule.max(240) }),
-    defineField({ name: 'preheader', title: 'Inbox preview text', type: 'string', validation: (rule) => rule.max(160) }),
     defineField({ name: 'body', title: 'Email body', type: 'portableText', validation: (rule) => rule.required() }),
+    defineField({ name: 'preheader', title: 'Inbox preview text', type: 'string', hidden: true, validation: (rule) => rule.max(160) }),
     defineField({
       name: 'audience',
       type: 'string',
@@ -26,6 +26,7 @@ export const newsletterCampaign = defineType({
       type: 'string',
       initialValue: 'draft',
       readOnly: true,
+      hidden: true,
       options: {
         layout: 'radio',
         list: [
@@ -35,12 +36,13 @@ export const newsletterCampaign = defineType({
       },
       validation: (rule) => rule.required(),
     }),
-    defineField({ name: 'sentAt', type: 'datetime', readOnly: true }),
-    defineField({ name: 'sentCount', type: 'number', readOnly: true }),
-    defineField({ name: 'lastSendError', type: 'text', rows: 3, readOnly: true }),
-    defineField({ name: 'seo', title: 'Archive SEO', type: 'seo' }),
+    defineField({ name: 'sentAt', type: 'datetime', readOnly: true, hidden: true }),
+    defineField({ name: 'sentCount', type: 'number', readOnly: true, hidden: true }),
+    defineField({ name: 'lastSendError', type: 'text', rows: 3, readOnly: true, hidden: ({ document }) => !document?.lastSendError }),
+    defineField({ name: 'seo', title: 'Archive SEO', type: 'seo', hidden: true }),
   ],
   preview: {
-    select: { title: 'title', subtitle: 'status' },
+    select: { title: 'heading', subject: 'subject', status: 'status' },
+    prepare: ({ title, subject, status }) => ({ title: title || subject || 'New newsletter', subtitle: status || 'draft' }),
   },
 });

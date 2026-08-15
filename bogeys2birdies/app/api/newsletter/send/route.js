@@ -66,6 +66,18 @@ function senderFrom(name, email) {
   return `${name || 'Bogeys2Birdies'} <${emailAddress(email)}>`;
 }
 
+function requestFromStudio(request) {
+  const referer = request.headers.get('referer');
+  if (!referer) return false;
+  try {
+    const refererUrl = new URL(referer);
+    const requestUrl = new URL(request.url);
+    return refererUrl.origin === requestUrl.origin && refererUrl.pathname.startsWith('/studio');
+  } catch {
+    return false;
+  }
+}
+
 function blockText(block) {
   return (block.children || []).map((child) => child.text || '').join('');
 }
@@ -150,7 +162,7 @@ async function sendEmail({ from, replyTo, to, subject, heading, subheading, preh
 export async function POST(request) {
   const configuredToken = process.env.NEWSLETTER_SEND_TOKEN;
   const requestToken = request.headers.get('authorization')?.replace(/^Bearer\s+/i, '') || request.headers.get('x-newsletter-send-token');
-  if (!configuredToken || requestToken !== configuredToken) return json({ error: 'Unauthorized.' }, 401);
+  if (!requestFromStudio(request) && (!configuredToken || requestToken !== configuredToken)) return json({ error: 'Unauthorized.' }, 401);
   if (!getWriteToken()) return json({ error: 'Sanity write token is not configured.' }, 503);
   if (!process.env.RESEND_API_KEY) return json({ error: 'RESEND_API_KEY is not configured.' }, 503);
 
@@ -197,7 +209,7 @@ export async function POST(request) {
         subject: campaign.subject,
         heading: campaign.heading || campaign.title,
         subheading: campaign.subheading,
-        preheader: campaign.preheader,
+        preheader: campaign.preheader || campaign.subheading,
         html,
         text,
       });

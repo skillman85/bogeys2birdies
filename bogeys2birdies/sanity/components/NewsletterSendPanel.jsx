@@ -2,8 +2,6 @@ import { useMemo, useState } from 'react';
 import { Button, Card, Flex, Stack, Text, TextInput } from '@sanity/ui';
 import { useFormValue } from 'sanity';
 
-const TOKEN_STORAGE_KEY = 'bogeys2birdies.newsletterSendToken';
-
 function currentDocumentId(document) {
   return String(document?._id || '');
 }
@@ -12,13 +10,10 @@ function hasBody(document) {
   return Array.isArray(document?.body) && document.body.length > 0;
 }
 
-async function sendNewsletter({ id, token, testOnly, testRecipient }) {
+async function sendNewsletter({ id, testOnly, testRecipient }) {
   const response = await fetch('/api/newsletter/send', {
     method: 'POST',
-    headers: {
-      Authorization: `Bearer ${token}`,
-      'Content-Type': 'application/json',
-    },
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ campaignId: id, testOnly, testRecipient }),
   });
   const payload = await response.json().catch(() => ({}));
@@ -28,7 +23,6 @@ async function sendNewsletter({ id, token, testOnly, testRecipient }) {
 
 export function NewsletterSendPanel() {
   const document = useFormValue([]);
-  const [token, setToken] = useState(() => (typeof window === 'undefined' ? '' : window.localStorage.getItem(TOKEN_STORAGE_KEY) || ''));
   const [testRecipient, setTestRecipient] = useState('');
   const [working, setWorking] = useState(false);
   const [message, setMessage] = useState('');
@@ -38,18 +32,9 @@ export function NewsletterSendPanel() {
   const alreadySent = document?.status === 'sent';
   const canSend = useMemo(() => Boolean(id && document?.subject && document?.heading && hasBody(document) && !alreadySent), [alreadySent, document, id]);
 
-  function rememberToken(nextToken) {
-    setToken(nextToken);
-    if (typeof window !== 'undefined') window.localStorage.setItem(TOKEN_STORAGE_KEY, nextToken);
-  }
-
   async function handleSend(testOnly) {
     setMessage('');
     setError('');
-    if (!token.trim()) {
-      setError('Add your newsletter send token first.');
-      return;
-    }
     if (testOnly && !testRecipient.trim()) {
       setError('Add a test email address first.');
       return;
@@ -60,7 +45,6 @@ export function NewsletterSendPanel() {
     try {
       const result = await sendNewsletter({
         id,
-        token: token.trim(),
         testOnly,
         testRecipient: testRecipient.trim(),
       });
@@ -80,16 +64,6 @@ export function NewsletterSendPanel() {
           <Text size={1} muted>
             Fill in the email subject, header, sub heading and body, then send a test or send to all active subscribers.
           </Text>
-        </Stack>
-
-        <Stack space={2}>
-          <Text size={1} weight="medium">Newsletter send token</Text>
-          <TextInput
-            type="password"
-            placeholder="Paste NEWSLETTER_SEND_TOKEN"
-            value={token}
-            onChange={(event) => rememberToken(event.currentTarget.value)}
-          />
         </Stack>
 
         <Stack space={2}>
